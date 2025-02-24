@@ -14,53 +14,58 @@
     <!-- Modal Form -->
     <div *ngIf="isFormOpen" class="modal">
       <div class="modal-content">
-        <h2>Enter Product Details</h2>
+        <h2>Enter Transaction Details</h2>
 
         <!-- Amount input -->
-        <label for="amount">💰 Amount:</label>
-        <input
-          id="amount"
-          [(ngModel)]="amount"
-          type="number"
-          placeholder="Enter amount"
-          [ngClass]="{'invalid': amount && amount <= 0}"
-        />
-        <div *ngIf="amount && amount <= 0" class="error">
-          Please enter a valid amount greater than 0.
-        </div>
+        <label for="amount">💰 Amount :</label>
+        <input id="amount" [(ngModel)]="transactionDetails.amount" type="number" placeholder="Enter amount" />
 
-        <!-- Bill Type input -->
         <label for="billType">📦 Bill Type:</label>
-        <input
-          id="billType"
-          [(ngModel)]="billType"
-          type="text"
-          placeholder="Enter Bill type"
-          [ngClass]="{'invalid': billType && billType.length < 3}"
-        />
-        <div *ngIf="billType && billType.length < 3" class="error">
-          Bill type should be at least 3 characters.
-        </div>
+        <input id="billType" [(ngModel)]="transactionDetails.billType" type="text" placeholder="Enter Bill type" />
 
-        <!-- Bill Type input -->
-        <label for="receiverBank">🏦 Receiver Bank Code: </label>
-        <input
-          id="receiverBank"
-          [(ngModel)]="receiverBank"
-          type="text"
-          placeholder="Enter Receiver Bank Code"
-        />
-        <div *ngIf="receiverBank && receiverBank.length < 3" class="error">
-          Bill type should be at least 3 characters.
-        </div>
+        <label for="receiverBank">🏦 Receiver Bank Code:</label>
+        <input id="receiverBank" [(ngModel)]="transactionDetails.receiverBank" type="text" placeholder="Enter Receiver Bank Code" />
+
+        <label for="currency">💱 Currency:</label>
+        <input id="currency" [(ngModel)]="transactionDetails.currency" type="text" placeholder="Enter currency" />
+
+        <!-- Drawee Details -->
+        <fieldset>
+          <legend>Drawee Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.draweeCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.draweeO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.draweeL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.draweeC"></label>
+        </fieldset>
+
+        <!-- Drawer Details -->
+        <fieldset>
+          <legend>Drawer Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.drawerCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.drawerO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.drawerL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.drawerC"></label>
+        </fieldset>
+
+        <!-- Payee Details -->
+        <fieldset>
+          <legend>Payee Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.payeeCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.payeeO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.payeeL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.payeeC"></label>
+        </fieldset>
+
+        <label>✅ Avalisation:</label>
+        <input [(ngModel)]="transactionDetails.avalisation" type="text" />
 
         <!-- Buttons -->
         <div class="modal-buttons">
           <button class="cancel-button" (click)="closeForm()">Cancel</button>
           <button
             class="submit-button"
-            (click)="submitForm()"
-            [disabled]="!amount || amount <= 0 || !billType || billType.length < 3">
+            (click)="submitForm()">
+<!--            [disabled]="!amount || amount <= 0 || !billType || billType.length < 3"-->
             Submit
           </button>
         </div>
@@ -75,7 +80,6 @@
         [columnDefs]="columnDefs"
         [rowData]="rowData"
         [pagination]="true"
-        [domLayout]="'autoHeight'"
         (gridReady)="onGridReady($event)"
         [modules]="modules">
       </ag-grid-angular>
