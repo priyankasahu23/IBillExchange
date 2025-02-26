@@ -1,0 +1,11 @@
+# Use OpenJDK as the base image
+FROM openjdk:17-jdk
+
+# Copy the Spring Boot JAR file
+COPY /target/IBillExchange-0.0.1-SNAPSHOT.jar /app/app.jar
+
+# Expose the application's port
+EXPOSE 8080
+
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

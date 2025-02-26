@@ -1,0 +1,11 @@
+# Use Nginx to serve Angular
+FROM nginx:latest
+
+# Copy Angular build files to Nginx default folder
+COPY /ui/dist/ui /usr/share/nginx/html
+
+# Expose the default Nginx port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

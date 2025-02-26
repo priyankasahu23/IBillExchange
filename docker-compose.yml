@@ -1,0 +1,28 @@
+version: '4.38'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.spring
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: /ui/Dockerfile.angular
+    container_name: angular-app
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
