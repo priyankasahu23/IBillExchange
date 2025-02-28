@@ -15,6 +15,8 @@ export class TransactionDetails {
   payeeO: string;
   payeeL: string;
   payeeC: string;
+  issuanceDate: string;
+  dueDate: string;
   avalisation: string;
   transactionStatus: string
 
@@ -36,6 +38,8 @@ export class TransactionDetails {
     payeeO: string,
     payeeL: string,
     payeeC: string,
+    issuanceDate: string,
+    dueDate: string,
     avalisation: string,
     transactionStatus: string
   ) {
@@ -55,6 +59,8 @@ export class TransactionDetails {
     this.payeeO = payeeO;
     this.payeeL = payeeL;
     this.payeeC = payeeC;
+    this.issuanceDate = issuanceDate;
+    this.dueDate = dueDate;
     this.avalisation = avalisation;
     this.transactionStatus = transactionStatus;
   }

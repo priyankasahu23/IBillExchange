@@ -14,6 +14,18 @@ const browserDistFolder = resolve(serverDistFolder, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+
+const cors = require('cors');
+
+// Enable CORS for your frontend URL
+app.use(cors({
+  origin: 'http://localhost:4200'
+}));
+
+app.post('/api/transactions/process', (req, res) => {
+  // Your API logic here
+});
+
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.

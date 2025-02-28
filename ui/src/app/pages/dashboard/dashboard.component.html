@@ -1,4 +1,5 @@
 <div class="dashboard-container">
+  <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
   <div *ngIf="userRole === 'Admin'">
     <h1>Welcome, Admin</h1>
     <p>This is the Admin Dashboard where you can manage users and payments.</p>
@@ -42,8 +43,8 @@
         <fieldset>
           <legend>Drawer Details</legend>
           <label>🏢 CN: <input [(ngModel)]="transactionDetails.drawerCN"></label>
-          <label>💼 O: <input [(ngModel)]="transactionDetails.drawerO"></label>
-          <label>📍 L: <input [(ngModel)]="transactionDetails.drawerL"></label>
+          <label>💼 Organization: <input [(ngModel)]="transactionDetails.drawerO"></label>
+          <label>📍 Location: <input [(ngModel)]="transactionDetails.drawerL"></label>
           <label>🌍 C: <input [(ngModel)]="transactionDetails.drawerC"></label>
         </fieldset>
 
@@ -54,6 +55,18 @@
           <label>💼 O: <input [(ngModel)]="transactionDetails.payeeO"></label>
           <label>📍 L: <input [(ngModel)]="transactionDetails.payeeL"></label>
           <label>🌍 C: <input [(ngModel)]="transactionDetails.payeeC"></label>
+        </fieldset>
+
+        <!-- Issuance Date and Due Date -->
+        <fieldset>
+          <legend>Transaction Dates</legend>
+          <div class="date-row">
+            <label for="issuanceDate">📅 Issuance Date:</label>
+            <input id="issuanceDate" [(ngModel)]="transactionDetails.issuanceDate" type="text" placeholder="dd/mm/yyyy" />
+
+            <label for="dueDate">⏳ Due Date:</label>
+            <input id="dueDate" [(ngModel)]="transactionDetails.dueDate" type="text" placeholder="dd/mm/yyyy" />
+          </div>
         </fieldset>
 
         <label>✅ Avalisation:</label>
@@ -81,7 +94,9 @@
         [rowData]="rowData"
         [pagination]="true"
         (gridReady)="onGridReady($event)"
-        [modules]="modules">
+        [modules]="modules"
+        rowSelection="single"
+        (rowSelected)="onRowSelected($event)">
       </ag-grid-angular>
     </div>
   </div>
