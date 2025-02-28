@@ -1,21 +1,61 @@
 <main class="main">
-    <div class="login-container">
-      <h2>Bank Login</h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        
+  <!-- Bank Header with Logo -->
+  <header class="bank-header">
+    <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
+    <span class="bank-title">COMMERCIAL BANKING</span>
+  </header>
+
+  <!-- Login Box -->
+  <div class="login-container">
+    <h2 class="login-title">Welcome to Commercial Banking Online</h2>
+    <p class="login-instruction">
+      To log on, you'll need to have your bank, role,username,password
+    </p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+      <!-- Select Bank -->
+      <div class="form-group">
         <label for="bank">Select Bank:</label>
         <select id="bank" formControlName="bank" required>
           <option value="" disabled selected>Select Bank</option>
           <option value="SBI">SBI</option>
-          <option value="LBG">LBG</option>
+          <option value="LBG">Lloyds Banking Group</option>
         </select>
+      </div>
 
-        <input type="text" formControlName="username" placeholder="Username" required />
-        <input type="password" formControlName="password" placeholder="Password" required />
-        
-        <button type="submit">Login</button>
-        
-        <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-      </form>
-    </div>
+      <!-- Select Role -->
+      <div class="form-group">
+        <label for="role">Select Role:</label>
+        <select id="role" formControlName="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="Buyer">Buyer</option>
+          <option value="Seller">Seller</option>
+        </select>
+      </div>
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" formControlName="username" placeholder="Enter your username" required>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+      </div>
+
+      <!-- Forgotten Links -->
+      <div class="forgot-links">
+        <a href="#" class="forgot-link">Forgotten your username?</a>
+        <a href="#" class="forgot-link">Forgotten your password?</a>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-btn">Continue</button>
+
+      <!-- Error Message -->
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </form>
+  </div>
 </main>

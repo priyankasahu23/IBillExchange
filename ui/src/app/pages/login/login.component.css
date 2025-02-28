@@ -1,50 +1,85 @@
-/* Set full-screen background */
-.main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    background-image: url('/assets/bill_of_exchange.jpg'); /* Ensure this path is correct */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+/* Set full-page background */
+body {
+  /*background-image: url('/assets/lloyds-bank-banner.jpg'); /* Change this to your actual image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-  /* Style the login form container */
-  .login-container {
-    background-color: rgba(255, 255, 255, 0.85); /* Slight transparency */
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
+/* Center the login form */
+.login-container {
+  width: 400px;
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-  /* Input fields */
-  .login-container input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
+/* Title Styling */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: darkgreen;
+  margin-bottom: 20px;
+}
 
-  /* Login button */
-  .login-container button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+/* Logo Styling */
+.small-logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 200px; /* Adjust size as needed */
+  height: auto;
+}
 
-  .login-container button:hover {
-    background-color: #0056b3;
-  }
+/* Form Fields */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Buttons */
+button {
+  background-color: darkgreen;
+  color: white;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #004d00;
+}
+
+/* Error Message */
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Link Styling */
+a {
+  text-decoration: none;
+  color: blue;
+  font-size: 14px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
