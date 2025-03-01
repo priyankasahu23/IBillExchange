@@ -16,6 +16,15 @@
   margin-bottom: 20px;
   text-align: center;
 }
+select, input {
+  width: 100%; /* Match widths */
+  height: 40px; /* Match heights */
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
 .small-logo {
   position: absolute;
   top: 10px;
@@ -51,7 +60,8 @@
 }
 
 .grid-container {
-  width: 100%;
+  width: 150%;
+  height: 300px;
   padding: 10px;
 }
 
@@ -66,6 +76,8 @@
 }
 
 .ag-theme-alpine .ag-header-cell-text {
+  width: 100%;
+  height: 100%;
   font-weight: bold;
 }
 
@@ -115,6 +127,13 @@ label {
   font-weight: bold;
   margin-top: 10px;
   display: block;
+}
+label {
+  display: flex;
+  flex-direction: column; /* Stack label and input/select vertically */
+  font-weight: bold;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 input {

@@ -4,4 +4,6 @@
   font-weight: bold !important;
   font-size: 16px; /* Optional: Increase font size */
   color: #000; /* Optional: Change header text color */
+  width: 100%;
+  height: 100%;
 }

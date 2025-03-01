@@ -8,6 +8,7 @@ import {TransactionDetails} from '../../model/transaction-details';
 import {TransactionService} from '../../service/transaction.service';
 import {BexTransactionRequest, RequestBody} from '../../model/bexRequest';
 import {HttpClient} from '@angular/common/http';
+import {TransactionStatus} from '../../model/transaction-status';
 
 
 @Component({
@@ -71,38 +72,67 @@ export class DashboardComponent implements OnInit {
     }
     this.columnDefs = [
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1},
-      { field: 'billType', headerName: 'Bill Type', sortable: true, filter: true, flex: 1 },
       { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1},
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-      { field: 'draweeCN', headerName: 'Drawee CN', sortable: true, filter: true,flex: 1 },
-      // { field: 'draweeO', headerName: 'Drawee O', sortable: true, filter: true },
-      // { field: 'draweeL', headerName: 'Drawee L', sortable: true, filter: true },
-      // { field: 'draweeC', headerName: 'Drawee C', sortable: true, filter: true },
-      { field: 'drawerCN', headerName: 'Drawer CN', sortable: true, filter: true, flex: 1 },
-      // { field: 'drawerO', headerName: 'Drawer O', sortable: true, filter: true },
-      // { field: 'drawerL', headerName: 'Drawer L', sortable: true, filter: true },
-      // { field: 'drawerC', headerName: 'Drawer C', sortable: true, filter: true },
-      { field: 'payeeCN', headerName: 'Payee CN', sortable: true, filter: true, flex: 1 },
-      // { field: 'payeeO', headerName: 'Payee O', sortable: true, filter: true },
-      // { field: 'payeeL', headerName: 'Payee L', sortable: true, filter: true },
-      // { field: 'payeeC', headerName: 'Payee C', sortable: true, filter: true },
+      { field: 'draweeDetails', headerName: 'Drawee Details', sortable: true, filter: true,flex: 1,
+        valueGetter: (params: any) => {
+          const cn = params.data.draweeCN || '';
+          const o = params.data.draweeO || '';
+          const l = params.data.draweeL || '';
+          const c = params.data.draweeC || '';
+
+          // Returning the combined string
+          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+        }
+      },
+      { field: 'drawerCN', headerName: 'Drawer Details', sortable: true, filter: true, flex: 1,
+        valueGetter: (params: any) => {
+          const cn = params.data.drawerCN || '';
+          const o = params.data.drawerO || '';
+          const l = params.data.drawerL || '';
+          const c = params.data.drawerC || '';
+
+          // Returning the combined string
+          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+        }
+        },
+      { field: 'payeeCN', headerName: 'Payee Details', sortable: true, filter: true, flex: 1 ,
+        valueGetter: (params: any) => {
+          const cn = params.data.payeeCN || '';
+          const o = params.data.payeeO || '';
+          const l = params.data.payeeL || '';
+          const c = params.data.payeeC || '';
+
+          // Returning the combined string
+          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+        }
+      },
       { field: 'avalisation', headerName: 'Avalisation', sortable: true, filter: true, flex: 1 },
-      { field: 'transactionStatus', headerName: 'Transaction Status', sortable: true, filter: true, flex: 1 }
+      { field: 'transactionStatus', headerName: 'Transaction Status', sortable: true, filter: true, flex: 1,
+        cellRenderer: (params: any) => {
+          // Create a button for the 'Transaction Status' column
+          const button = document.createElement('button');
+          button.innerHTML = 'Get Transaction Details';
+          button.addEventListener('click', () => {
+            this.getTransactionDetails(params.data); // Call the function on click
+          });
+          return button;
+        }}
     ];
 
     // Default row data (you can have multiple default rows if needed)
     this.rowData = [
       new TransactionDetails(
-        1000, 'Sample Bill', 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending'
+        1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending'
       ),
       new TransactionDetails(
-        5000, 'Bill 2', 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed'
+        5000,'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed'
       ),
       new TransactionDetails(
-        1000, 'Sample Bill', 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC','10/10/2024','10/12/2024', 'Avalisation', 'Pending'
+        1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC','10/10/2024','10/12/2024', 'Avalisation', 'Pending'
       ),
       new TransactionDetails(
-        5000, 'Bill 2', 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed'
+        5000, 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed'
       ),
     ];
   }
@@ -115,7 +145,7 @@ export class DashboardComponent implements OnInit {
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
-      0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','',''
+      0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','',''
     );
   }
 
@@ -144,6 +174,23 @@ export class DashboardComponent implements OnInit {
       },
       (error) => {
         console.error('Error sending request to backend:', error);
+      }
+    );
+  }
+
+  getTransactionDetails(rowData: any) {
+    const requestBody: TransactionStatus = {
+      clientRequestId: 'list-2',
+      flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
+      requestBody: {} // Modify if rowData needs to be included
+    };
+
+    this.transactionService.sendTransactionRequest(requestBody).subscribe(
+      (response) => {
+        alert(`Transaction Details: ${JSON.stringify(response)}`);
+      },
+      (error) => {
+        alert(`Error: ${error.message}`);
       }
     );
   }
@@ -186,7 +233,6 @@ export class DashboardComponent implements OnInit {
   mapTransactionToGrid(transaction: TransactionDetails): any {
     return {
       amount: transaction.amount,
-      billType: transaction.billType,
       receiverBank: transaction.receiverBank,
       currency: transaction.currency,
       draweeCN: transaction.draweeCN,
@@ -219,4 +265,33 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  cnList = [
+    { cn: 'Company ABC', o: 'Org A', l: 'Mumbai', c: 'India' },
+    { cn: 'ABC Imports', o: 'ABC Global Trade', l: 'New York', c: 'USA' },
+    { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
+    { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
+  ];
+
+  // cnList = [
+  //   { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
+  //   { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
+  //   { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
+  //   { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
+  //   { cn: 'Deutsche Bank', o: 'Deutsche Bank AG', l: 'Frankfurt', c: 'Germany' },
+  //   { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
+  //   { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
+  // ];
+
+
+updateDetails(type: 'drawee' | 'drawer' | 'payee') {
+  const selectedCN = this.transactionDetails[`${type}CN` as keyof TransactionDetails];
+
+  const selectedItem = this.cnList.find(item => item.cn === selectedCN);
+
+  if (selectedItem) {
+    (this.transactionDetails as any)[`${type}O`] = selectedItem.o;
+    (this.transactionDetails as any)[`${type}L`] = selectedItem.l;
+    (this.transactionDetails as any)[`${type}C`] = selectedItem.c;
+  }
+}
 }
