@@ -1,4 +1,5 @@
 export class TransactionDetails {
+  clientRequestId: string;
   amount: number;
   receiverBank: string;
   currency: string;
@@ -17,10 +18,12 @@ export class TransactionDetails {
   issuanceDate: string;
   dueDate: string;
   avalisation: string;
-  transactionStatus: string
+  transactionStatus: string;
+  holdingIdentiy: string;
 
 
   constructor(
+    clientRequestId: string,
     amount: number,
     receiverBank: string,
     currency: string,
@@ -39,8 +42,10 @@ export class TransactionDetails {
     issuanceDate: string,
     dueDate: string,
     avalisation: string,
-    transactionStatus: string
+    transactionStatus: string,
+    holdingIdentiy: string
   ) {
+    this.clientRequestId = clientRequestId;
     this.amount = amount;
     this.receiverBank = receiverBank;
     this.currency = currency;
@@ -60,5 +65,6 @@ export class TransactionDetails {
     this.dueDate = dueDate;
     this.avalisation = avalisation;
     this.transactionStatus = transactionStatus;
+    this.holdingIdentiy = holdingIdentiy;
   }
 }

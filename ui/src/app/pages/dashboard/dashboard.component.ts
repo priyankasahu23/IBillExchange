@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   private boeDocs: string = '';
   private termsAndConditions: string = 't&c.........';
   private iso20022Message: string   = 'iso20022Message';
-  private clientRequestId: string = this.generateClientRequestId();
+  // private clientRequestId: string
   private flowClassName: string = 'com.example.transactionapi.TransactionFlow';
 
   constructor(private router: Router, private renderer: Renderer2, private transactionService: TransactionService, private http: HttpClient) {
@@ -71,6 +71,7 @@ export class DashboardComponent implements OnInit {
       this.renderer.setStyle(document.body, 'background-position', 'center');
     }
     this.columnDefs = [
+      { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1},
       { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1},
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
@@ -123,16 +124,16 @@ export class DashboardComponent implements OnInit {
     // Default row data (you can have multiple default rows if needed)
     this.rowData = [
       new TransactionDetails(
-        1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending'
+        'REQ1740845361862',1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending', ''
       ),
       new TransactionDetails(
-        5000,'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed'
+        'REQ1740845361876',5000,'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
       ),
       new TransactionDetails(
-        1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC','10/10/2024','10/12/2024', 'Avalisation', 'Pending'
+        'REQ1740845361890',1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC','10/10/2024','10/12/2024', 'Avalisation', 'Pending',''
       ),
       new TransactionDetails(
-        5000, 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed'
+        'REQ1740845361789',5000, 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
       ),
     ];
   }
@@ -145,7 +146,7 @@ export class DashboardComponent implements OnInit {
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
-      0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','',''
+      '',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','',''
     );
   }
 
@@ -155,7 +156,9 @@ export class DashboardComponent implements OnInit {
 
     submitForm() {
     if (this.transactionDetails.amount> 0) {
+      this.transactionDetails.clientRequestId =  this.generateClientRequestId();
       const bexRequest = this.mapTransactionToBexRequest(this.transactionDetails);
+      console.log("this.transactionDetails",this.transactionDetails);
       const newEntry = this.mapTransactionToGrid(this.transactionDetails);
 
       // ✅ Update the array using a new reference to trigger change detection
@@ -169,6 +172,8 @@ export class DashboardComponent implements OnInit {
   initiateTransaction(bexRequest: BexTransactionRequest) {
     this.transactionService.sendTransactionRequest(bexRequest).subscribe(
       (response) => {
+        console.log("Response BEX Token "+response)
+        this.transactionDetails.holdingIdentiy = response.holdingIdentityShortHash
         alert('BEX Token Generated Successfully!');
         console.log('Request successfully sent to backend:', response);
       },
@@ -179,13 +184,14 @@ export class DashboardComponent implements OnInit {
   }
 
   getTransactionDetails(rowData: any) {
+    console.log("rowdata",rowData);
     const requestBody: TransactionStatus = {
-      clientRequestId: 'list-2',
+      clientRequestId: rowData.clientRequestId,
       flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
       requestBody: {} // Modify if rowData needs to be included
     };
 
-    this.transactionService.sendTransactionRequest(requestBody).subscribe(
+    this.transactionService.getStatusRequest(requestBody, rowData.holdingIdentiy).subscribe(
       (response) => {
         alert(`Transaction Details: ${JSON.stringify(response)}`);
       },
@@ -218,7 +224,7 @@ export class DashboardComponent implements OnInit {
 
     // Make sure you're passing the correct fields to the constructor of `BexTransactionRequest`
     return new BexTransactionRequest(
-      this.clientRequestId,   // Assuming these are present in the form as well
+      transactionDetails.clientRequestId,   // Assuming these are present in the form as well
       this.flowClassName,     // Same assumption as above
       requestBody  // The actual body of the request
     );
@@ -232,6 +238,7 @@ export class DashboardComponent implements OnInit {
 
   mapTransactionToGrid(transaction: TransactionDetails): any {
     return {
+      clientRequestId: transaction.clientRequestId,
       amount: transaction.amount,
       receiverBank: transaction.receiverBank,
       currency: transaction.currency,
@@ -265,22 +272,22 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  cnList = [
-    { cn: 'Company ABC', o: 'Org A', l: 'Mumbai', c: 'India' },
-    { cn: 'ABC Imports', o: 'ABC Global Trade', l: 'New York', c: 'USA' },
-    { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
-    { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
-  ];
-
   // cnList = [
-  //   { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
-  //   { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
-  //   { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
-  //   { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
-  //   { cn: 'Deutsche Bank', o: 'Deutsche Bank AG', l: 'Frankfurt', c: 'Germany' },
-  //   { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
-  //   { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
+  //   { cn: 'Company ABC', o: 'Org A', l: 'Mumbai', c: 'India' },
+  //   { cn: 'ABC Imports', o: 'ABC Global Trade', l: 'New York', c: 'USA' },
+  //   { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
+  //   { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
   // ];
+
+  cnList = [
+    { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
+    { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
+    { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
+    { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
+    { cn: 'Deutsche Bank', o: 'Deutsche Bank AG', l: 'Frankfurt', c: 'Germany' },
+    { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
+    { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
+  ];
 
 
 updateDetails(type: 'drawee' | 'drawer' | 'payee') {
