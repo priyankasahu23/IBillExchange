@@ -1,0 +1,88 @@
+<div class="dashboard-container">
+  <div *ngIf="userRole === 'Admin'">
+    <h1>Welcome, Admin</h1>
+    <p>This is the Admin Dashboard where you can manage users and payments.</p>
+  </div>
+
+  <div *ngIf="userRole === 'SBI'" class="dashboard">
+    <!-- Header -->
+    <h1 class="title">{{ userRole }} Dashboard</h1>
+
+    <!-- Add Product Button -->
+    <button class="add-button" (click)="openForm()">➕ Create New Transaction Request</button>
+
+    <!-- Modal Form -->
+    <div *ngIf="isFormOpen" class="modal">
+      <div class="modal-content">
+        <h2>Enter Transaction Details</h2>
+
+        <!-- Amount input -->
+        <label for="amount">💰 Amount :</label>
+        <input id="amount" [(ngModel)]="transactionDetails.amount" type="number" placeholder="Enter amount" />
+
+        <label for="billType">📦 Bill Type:</label>
+        <input id="billType" [(ngModel)]="transactionDetails.billType" type="text" placeholder="Enter Bill type" />
+
+        <label for="receiverBank">🏦 Receiver Bank Code:</label>
+        <input id="receiverBank" [(ngModel)]="transactionDetails.receiverBank" type="text" placeholder="Enter Receiver Bank Code" />
+
+        <label for="currency">💱 Currency:</label>
+        <input id="currency" [(ngModel)]="transactionDetails.currency" type="text" placeholder="Enter currency" />
+
+        <!-- Drawee Details -->
+        <fieldset>
+          <legend>Drawee Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.draweeCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.draweeO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.draweeL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.draweeC"></label>
+        </fieldset>
+
+        <!-- Drawer Details -->
+        <fieldset>
+          <legend>Drawer Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.drawerCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.drawerO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.drawerL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.drawerC"></label>
+        </fieldset>
+
+        <!-- Payee Details -->
+        <fieldset>
+          <legend>Payee Details</legend>
+          <label>🏢 CN: <input [(ngModel)]="transactionDetails.payeeCN"></label>
+          <label>💼 O: <input [(ngModel)]="transactionDetails.payeeO"></label>
+          <label>📍 L: <input [(ngModel)]="transactionDetails.payeeL"></label>
+          <label>🌍 C: <input [(ngModel)]="transactionDetails.payeeC"></label>
+        </fieldset>
+
+        <label>✅ Avalisation:</label>
+        <input [(ngModel)]="transactionDetails.avalisation" type="text" />
+
+        <!-- Buttons -->
+        <div class="modal-buttons">
+          <button class="cancel-button" (click)="closeForm()">Cancel</button>
+          <button
+            class="submit-button"
+            (click)="submitForm()">
+<!--            [disabled]="!amount || amount <= 0 || !billType || billType.length < 3"-->
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Data Grid -->
+    <div class="grid-container">
+      <ag-grid-angular
+        class="ag-theme-alpine full-grid"
+        [columnDefs]="columnDefs"
+        [rowData]="rowData"
+        [pagination]="true"
+        (gridReady)="onGridReady($event)"
+        [modules]="modules">
+      </ag-grid-angular>
+    </div>
+  </div>
+</div>
