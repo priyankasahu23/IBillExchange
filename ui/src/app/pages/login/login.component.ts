@@ -16,33 +16,33 @@ export class LoginComponent {
 
   constructor(private router: Router, private fb: FormBuilder) {
     this.loginForm = this.fb.group({
-      bank: ['', [Validators.required]],  // Bank selection
+      //bank: ['', [Validators.required]],  // Bank selection
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      role: ['', [Validators.required]],  // Role selection (Buyer/Seller)
+     // role: ['', [Validators.required]],  // Role selection (Buyer/Seller)
     });
   }
 
   onLogin() {
       if (this.loginForm.valid) {
-        const { bank, username, password } = this.loginForm.value;
+        const { username, password } = this.loginForm.value;
 
-        if (!bank) {
+       /* if (!bank) {
           this.errorMessage = 'Please select a bank!';
           return;
-        }
+        }*/
 
         if (username === 'admin' && password === 'admin123') {
           sessionStorage.setItem('userRole', 'Admin');
-          sessionStorage.setItem('bank', bank); // Store selected bank
+          //sessionStorage.setItem('bank', bank); // Store selected bank
           this.router.navigate(['/dashboard']);
-        } else if (username === 'sbiuser' && password === 'sbi123' && bank === 'SBI') {
+        } else if (username === 'sbiuser' && password === 'sbi123') {
           sessionStorage.setItem('userRole', 'SBI');
-          sessionStorage.setItem('bank', bank);
+          //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/dashboard']);
-        } else if (username === 'lbguser' && password === 'lbg123' && bank === 'LBG')  {
+        } else if (username === 'lbguser' && password === 'lbg123' )  {
           sessionStorage.setItem('userRole', 'Buyer');
-          sessionStorage.setItem('bank', bank);
+          //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid username, password, or bank selection!';

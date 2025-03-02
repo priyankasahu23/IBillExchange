@@ -12,7 +12,7 @@ import {BexResponse} from '../model/bex-response';
 export class TransactionService {
 
   constructor(private http: HttpClient) { }
-  private createTransactionUrl = 'http://localhost:8082/api/transactions/process';  // Update with actual backend URL
+  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/92C32919F8DB';  // Update with actual backend URL
 
   transactionDetails: TransactionDetails = new TransactionDetails('',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','','');
  // Initialize with default values
@@ -40,7 +40,7 @@ export class TransactionService {
   }
 
   getStatusRequest(request: TransactionStatus, holdingIdentity: string): Observable<any> {
-   this.transactionStatusUrl = `https://localhost:8888/api/v5_2/flow/${holdingIdentity}`;
+   this.transactionStatusUrl = `https://localhost:8888/api/v5_2/flow/92C32919F8DB`;
     return this.http.post(this.transactionStatusUrl, request, {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Basic YWRtaW46YWRtaW4=`}
     });

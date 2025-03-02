@@ -105,7 +105,7 @@ export class DashboardComponent implements OnInit {
     ];
 
     // Default row data (you can have multiple default rows if needed)
-    this.rowData = [
+   /* this.rowData = [
       new TransactionDetails(
         'REQ1740845361862',1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending', ''
       ),
@@ -118,7 +118,7 @@ export class DashboardComponent implements OnInit {
       new TransactionDetails(
         'REQ1740845361789',5000, 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
       ),
-    ];
+    ];*/
   }
 
 
