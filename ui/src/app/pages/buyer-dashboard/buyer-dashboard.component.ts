@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import {ColDef} from 'ag-grid-community';
 import {AgGridAngular} from 'ag-grid-angular';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-buyer-dashboard',
+  standalone: true,
   imports: [
-    AgGridAngular
+    AgGridAngular,
+    CommonModule
   ],
   templateUrl: './buyer-dashboard.component.html',
   styleUrl: './buyer-dashboard.component.css'

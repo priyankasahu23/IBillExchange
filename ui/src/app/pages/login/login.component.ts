@@ -40,10 +40,10 @@ export class LoginComponent {
           sessionStorage.setItem('userRole', 'SBI');
           sessionStorage.setItem('bank', bank);
           this.router.navigate(['/dashboard']);
-        } else if (username === 'lbguser' && password === 'lbg123') {
-          sessionStorage.setItem('userRole', 'LBG');
-          // sessionStorage.setItem('bank', bank);
-          this.router.navigate(['buyer-dashboard']);
+        } else if (username === 'lbguser' && password === 'lbg123' && bank === 'LBG')  {
+          sessionStorage.setItem('userRole', 'Buyer');
+          sessionStorage.setItem('bank', bank);
+          this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid username, password, or bank selection!';
         }

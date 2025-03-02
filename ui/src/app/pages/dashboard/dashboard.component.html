@@ -109,4 +109,35 @@
       </ag-grid-angular>
     </div>
   </div>
+
+  <div *ngIf="userRole === 'LBG'" class="dashboard">
+    <h1 class="title">{{ userRole }} Dashboard</h1>
+    <div class="grid-container">
+      <ag-grid-angular
+        class="ag-theme-alpine full-grid"
+        [columnDefs]="columnDef_Buyer"
+        [rowData]="rowData"
+        [pagination]="true"
+        (gridReady)="onGridReady($event)"
+        [modules]="modules">
+      </ag-grid-angular>
+    </div>
+
+    <!-- Popup for Approval -->
+    <div class="popup" *ngIf="showPopup">
+      <div class="popup-content">
+        <h3>Transaction Summary</h3>
+        <p><b>Amount:</b> {{ selectedTransaction?.amount }}</p>
+        <p><b>Receiver Bank:</b> {{ selectedTransaction?.receiverBank }}</p>
+        <p><b>Currency:</b> {{ selectedTransaction?.currency }}</p>
+        <p><b>Drawee CN:</b> {{ selectedTransaction?.draweeCN }}</p>
+        <p><b>Drawer CN:</b> {{ selectedTransaction?.drawerCN }}</p>
+        <p><b>Payee CN:</b> {{ selectedTransaction?.payeeCN }}</p>
+
+        <button class="green-btn" (click)="updateTransaction('Approved')">Approve</button>
+        <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>
+        <button class="close-btn" (click)="closePopup()">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

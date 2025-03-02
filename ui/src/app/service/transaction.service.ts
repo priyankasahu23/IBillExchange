@@ -42,7 +42,7 @@ export class TransactionService {
   getStatusRequest(request: TransactionStatus, holdingIdentity: string): Observable<any> {
    this.transactionStatusUrl = `https://localhost:8888/api/v5_2/flow/${holdingIdentity}`;
     return this.http.post(this.transactionStatusUrl, request, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Basic YWRtaW46YWRtaW4=`}
     });
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
-import {ClientSideRowModelModule, GridApi, Module} from 'ag-grid-community';
+import {ClientSideRowModelModule, ColDef, GridApi, Module} from 'ag-grid-community';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {TransactionDetails} from '../../model/transaction-details';
 import {TransactionService} from '../../service/transaction.service';
@@ -51,25 +51,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     // Get user role from session storage (or another method)
     this.userRole = sessionStorage.getItem('userRole') || '';
-
-    // Apply background based on user type
-    if (this.userRole === 'SBI') {
-      this.renderer.setStyle(
-        document.body,
-        'background-image',
-        "url('\BOE-DLT-Project\LoginPage\src\assets\Rbi.jpg')"
-      );
-      this.renderer.setStyle(document.body, 'background-size', 'cover');
-      this.renderer.setStyle(document.body, 'background-position', 'center');
-    } else {
-      this.renderer.setStyle(
-        document.body,
-        'background-image',
-        "url('\BOE-DLT-Project\LoginPage\src\assets\bill_of_exchange.jpg')"
-      );
-      this.renderer.setStyle(document.body, 'background-size', 'cover');
-      this.renderer.setStyle(document.body, 'background-position', 'center');
-    }
+    console.log("this.userRole",this.userRole);
+    //column for Buyer
     this.columnDefs = [
       { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1},
@@ -301,4 +284,80 @@ updateDetails(type: 'drawee' | 'drawer' | 'payee') {
     (this.transactionDetails as any)[`${type}C`] = selectedItem.c;
   }
 }
+
+  columnDef_Buyer: ColDef[] = [
+    { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
+    { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
+    { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1 },
+    { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
+    { field: 'draweeDetails', headerName: 'Drawee Details', sortable: true, filter: true,flex: 1,
+      valueGetter: (params: any) => {
+        const cn = params.data.draweeCN || '';
+        const o = params.data.draweeO || '';
+        const l = params.data.draweeL || '';
+        const c = params.data.draweeC || '';
+
+        // Returning the combined string
+        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+      }
+    },
+    { field: 'drawerCN', headerName: 'Drawer Details', sortable: true, filter: true, flex: 1,
+      valueGetter: (params: any) => {
+        const cn = params.data.drawerCN || '';
+        const o = params.data.drawerO || '';
+        const l = params.data.drawerL || '';
+        const c = params.data.drawerC || '';
+
+        // Returning the combined string
+        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+      }
+    },
+    { field: 'payeeCN', headerName: 'Payee Details', sortable: true, filter: true, flex: 1 ,
+      valueGetter: (params: any) => {
+        const cn = params.data.payeeCN || '';
+        const o = params.data.payeeO || '';
+        const l = params.data.payeeL || '';
+        const c = params.data.payeeC || '';
+
+        // Returning the combined string
+        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+      }
+    },
+    {
+      field: 'transactionStatus',
+      headerName: 'Approval Pending',
+      flex: 1,
+      cellRenderer: (params: any) => `<button class="red-btn">Approval Pending</button>`,
+      onCellClicked: (params: any) => this.openPopup(params.data)
+    }
+  ];
+
+  selectedTransaction: any = null;
+  showPopup: boolean = false;
+
+  openPopup(transaction: any) {
+    console.log("In Open pop Up......",transaction);
+    this.selectedTransaction = transaction;
+    this.showPopup = true;
+  }
+
+  closePopup() {
+    this.showPopup = false;
+  }
+
+  updateTransaction(status: string) {
+    if (this.selectedTransaction) {
+      this.selectedTransaction.transactionStatus = status;
+      this.rowData = [...this.rowData]; // Refresh grid
+      alert(`Transaction ${status}`);
+      this.closePopup();
+    }
+  }
+
+  addTransaction(newTransaction: any) {
+    newTransaction.id = this.rowData.length + 1;
+    this.rowData.push(newTransaction);
+    this.rowData.sort((a, b) => b.id - a.id); // Sort latest first
+    this.rowData = [...this.rowData];
+  }
 }
