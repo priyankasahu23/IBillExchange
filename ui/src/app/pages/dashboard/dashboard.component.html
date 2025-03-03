@@ -21,12 +21,12 @@
         <label for="amount">💰 Amount :</label>
         <input id="amount" [(ngModel)]="transactionDetails.amount" type="number" placeholder="Enter amount" />
 
-        <label for="billType">💰 Bill Type :
-        <select [(ngModel)]="transactionDetails.draweeCN" (change)="updateDetails('drawee')">
-          <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
+        <label>💰 Product Type :
+        <select [(ngModel)]="transactionDetails.billType">
+          <option *ngFor="let billType of billTypeList" [value]="billType">{{ billType }}</option>
         </select>
       </label>
-      
+
         <label for="receiverBank">🏦 Receiver Bank Code:</label>
         <input id="receiverBank" [(ngModel)]="transactionDetails.receiverBank" type="text" placeholder="Enter Receiver Bank Code" />
 

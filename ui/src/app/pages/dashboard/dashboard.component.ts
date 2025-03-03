@@ -255,15 +255,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // cnList = [
-  //   { cn: 'Company ABC', o: 'Org A', l: 'Mumbai', c: 'India' },
-  //   { cn: 'ABC Imports', o: 'ABC Global Trade', l: 'New York', c: 'USA' },
-  //   { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
-  //   { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
-  // ];
   billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
     'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
-  
+
   cnList = [
     { cn: 'ABC Imports', o: 'ABC Imports', l: 'India', c: 'IN' },
     { cn: 'Global Exports', o: 'Global Exports', l: 'India', c: 'IN' },
