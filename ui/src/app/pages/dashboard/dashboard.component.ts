@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit {
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
-      '',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','',''
+      '','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','',''
     );
   }
 
@@ -261,7 +261,9 @@ export class DashboardComponent implements OnInit {
   //   { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
   //   { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
   // ];
-  billTypeList: ['Letter of Credit(LC)','Purchase Order(PO)']
+  billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
+    'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
+  
   cnList = [
     { cn: 'ABC Imports', o: 'ABC Imports', l: 'India', c: 'IN' },
     { cn: 'Global Exports', o: 'Global Exports', l: 'India', c: 'IN' },
