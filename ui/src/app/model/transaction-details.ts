@@ -1,6 +1,7 @@
 export class TransactionDetails {
   clientRequestId: string;
   amount: number;
+  billType: string;
   receiverBank: string;
   currency: string;
   draweeCN: string;
@@ -24,6 +25,7 @@ export class TransactionDetails {
 
   constructor(
     clientRequestId: string,
+    billType: string,
     amount: number,
     receiverBank: string,
     currency: string,
@@ -47,6 +49,7 @@ export class TransactionDetails {
   ) {
     this.clientRequestId = clientRequestId;
     this.amount = amount;
+    this.billType = billType;
     this.receiverBank = receiverBank;
     this.currency = currency;
     this.draweeCN = draweeCN;

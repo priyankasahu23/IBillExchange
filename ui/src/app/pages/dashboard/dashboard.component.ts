@@ -261,15 +261,20 @@ export class DashboardComponent implements OnInit {
   //   { cn: 'XYZ Exports', o: 'XYZ International', l: 'Los Angeles', c: 'USA' },
   //   { cn: 'Sunshine Trading Co.', o: 'Sunshine Exports Ltd.', l: 'London', c: 'UK' },
   // ];
-
+  billTypeList: ['Letter of Credit(LC)','Purchase Order(PO)']
   cnList = [
-    { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
-    { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
-    { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
-    { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
-    { cn: 'Deutsche Bank', o: 'Deutsche Bank AG', l: 'Frankfurt', c: 'Germany' },
-    { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
-    { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
+    { cn: 'ABC Imports', o: 'ABC Imports', l: 'India', c: 'IN' },
+    { cn: 'Global Exports', o: 'Global Exports', l: 'India', c: 'IN' },
+    { cn: 'ICICI Bank', o: 'ICICI Bank', l: 'India', c: 'IN' },
+    { cn: 'RBI Bank', o: 'Reserve Bank of India', l: 'India', c: 'IN' },
+    { cn: 'LBG Bank', o: 'Lloyds Banking group', l: 'FrankfuLondonert', c: 'GB' },
+    // { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
+    // { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
+    // { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
+    // { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
+    // { cn: 'Deutsche Bank', o: 'Deutsche Bank AG', l: 'Frankfurt', c: 'Germany' },
+    // { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
+    // { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
   ];
 
 
