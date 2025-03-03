@@ -5,6 +5,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import {ClientSideRowModelModule, ColDef, GridApi, Module} from 'ag-grid-community';
 import {FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {TransactionDetails} from '../../model/transaction-details';
+import { TransactionDetailsGrid } from '../../model/transaction-details-result';
 import {TransactionService} from '../../service/transaction.service';
 import {BexTransactionRequest, RequestBody} from '../../model/bexRequest';
 import {HttpClient} from '@angular/common/http';
@@ -28,6 +29,12 @@ export class DashboardComponent implements OnInit {
   rowData: any[] = [];
   modules: Module[] = [ClientSideRowModelModule];
   transactionDetails: TransactionDetails = {} as TransactionDetails;
+  transactionDetailsGrid: TransactionDetailsGrid = {} as TransactionDetailsGrid;
+
+  
+  transactionResult: any
+  
+  transactionResultGrid: any
 
   transactionForm!: FormGroup;
   private endorsements: string[] =  [];
@@ -36,10 +43,10 @@ export class DashboardComponent implements OnInit {
   private termsAndConditions: string = 't&c.........';
   private iso20022Message: string   = 'iso20022Message';
   // private clientRequestId: string
-  private flowClassName: string = 'com.example.transactionapi.TransactionFlow';
+  private flowClassName: string = 'com.r3.developers.samples.obligation.workflows.IOUIssueFlow';
 
   constructor(private router: Router, private renderer: Renderer2, private transactionService: TransactionService, private http: HttpClient) {
-    this.transactionDetails = this.transactionService.getTransactionDetails();
+    this.transactionDetailsGrid = this.transactionService.getTransactionDetailsGrid();
   }
 
   generateClientRequestId(): string {
@@ -47,62 +54,88 @@ export class DashboardComponent implements OnInit {
     return `REQ${timestamp}`;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // Get user role from session storage (or another method)
     this.userRole = sessionStorage.getItem('userRole') || '';
-    console.log("this.userRole",this.userRole);
-    //column for Buyer
+    console.log("this.userRole", this.userRole);
+
+    // Define columns for Buyer
     this.columnDefs = [
-      { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
-      { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5},
-      { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1},
+      { field: 'id', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1 },
+      { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5 },
+      { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-      { field: 'buyerBankCN', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1,
+      {
+        field: 'drawee', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1,
         valueGetter: (params: any) => {
           const cn = params.data.buyerBankCN || '';
           // Returning the combined string
           return `${cn}`;
         }
-        },
-      { field: 'buyerCN', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1 ,
+      },
+      {
+        field: 'payee', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1,
         valueGetter: (params: any) => {
           const cn = params.data.buyerCN || '';
-
           // Returning the combined string
           return `${cn}`;
         }
       },
-      { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1},
+      { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1 },
       { field: 'avalisation', headerName: 'Avalisation', sortable: true, filter: true, flex: 1 },
-      { field: 'transactionStatus', headerName: 'Transaction Status', sortable: true, filter: true, flex: 2,
-        cellRenderer: (params: any) => {
-          // Create a button for the 'Transaction Status' column
-          const button = document.createElement('button');
-          button.innerHTML = 'Get Transaction Details';
-          button.addEventListener('click', () => {
-            this.getTransactionDetails(params.data); // Call the function on click
-          });
-          return button;
-        }}
     ];
 
-    // Default row data (you can have multiple default rows if needed)
-   this.rowData = [
-      new TransactionDetails(
-        'REQ1740845361862','Documentary Collection',1000,'INR', 'CN-01', 'buyerBank-01', 'seller-01', 'sellerL', 'buyerBankCN', 'buyerBankO', 'buyerBankL', 'buyerBankC', 'buyerCN', 'buyerO', 'buyerL', 'buyerC', '10/10/2024','10/12/2024','Avalisation', 'Pending', ''
-      ),
-      new TransactionDetails(
-        'REQ1740845361876','Documentary Collection',5000, 'INR', 'CN-02', 'buyerBank-02', 'seller-02', 'sellerL2', 'buyerBankCN2', 'buyerBankO2', 'buyerBankL2', 'buyerBankC2', 'buyerCN2', 'buyerO2', 'buyerL2', 'buyerC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
-      ),
-      new TransactionDetails(
-        'REQ1740845361890','Documentary Collection',1000, 'INR', 'CN-01', 'buyerBank-01', 'seller-01', 'sellerL', 'buyerBankCN', 'buyerBankO', 'buyerBankL', 'buyerBankC', 'buyerCN', 'buyerO', 'buyerL', 'buyerC','10/10/2024','10/12/2024', 'Avalisation', 'Pending',''
-      ),
-      new TransactionDetails(
-        'REQ1740845361789','Documentary Collection',5000, 'INR', 'CN-02', 'buyerBank-02', 'seller-02', 'sellerL2', 'buyerBankCN2', 'buyerBankO2', 'buyerBankL2', 'buyerBankC2', 'buyerCN2', 'buyerO2', 'buyerL2', 'buyerC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
-      ),
-    ];
+    // Fetch and populate table data
+
+    this.getTransactionResult();
   }
 
+  getTransactionResult(): void {
+    const clientRequestId = this.generateClientRequestId(); // Replace with the actual clientRequestId
+    const requestBody: TransactionStatus = {
+      clientRequestId: clientRequestId,
+      flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
+      requestBody: {} // Modify if rowData needs to be included
+    };
+    this.transactionService.getStatusRequest(requestBody).subscribe(
+          (response: any) => {
+            // Directly display the response object
+            alert(`Transaction Details: ${response}`);
+          },
+          (error: { message: any; }) => {
+            alert(`Error: ${error.message}`)});
+
+    this.transactionService.fetchTransactionResult(clientRequestId).subscribe((result: any) => {
+      this.transactionResultGrid = result;
+      console.log(this.transactionDetailsGrid);
+
+      // Assuming the API returns an array of TransactionDetails
+      this.rowData = this.transactionResultGrid.json;
+    }, (error: any) => {
+      console.error('Error fetching transaction result', error);
+    });
+  }
+
+  // getTransactionDetails() {
+  //   //console.log("rowdata", rowData);
+  //   const requestBody: TransactionStatus = {
+  //     clientRequestId: rowData.clientRequestId,
+  //     flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
+  //     requestBody: {} // Modify if rowData needs to be included
+  //   };
+  
+  //   this.transactionService.getStatusRequest(requestBody).subscribe(
+  //     (response: any) => {
+  //       // Directly display the response object
+  //       alert(`Transaction Details: ${response}`);
+  //     },
+  //     (error: { message: any; }) => {
+  //       alert(`Error: ${error.message}`);
+  //   }
+  //   );
+  //  }
+
+   
 
   openForm() {
     this.isFormOpen = true;
@@ -111,7 +144,7 @@ export class DashboardComponent implements OnInit {
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
-      '','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','',''
+      '','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','','','',''
     );
   }
 
@@ -124,10 +157,10 @@ export class DashboardComponent implements OnInit {
       this.transactionDetails.clientRequestId =  this.generateClientRequestId();
       const bexRequest = this.mapTransactionToBexRequest(this.transactionDetails);
       console.log("this.transactionDetails",this.transactionDetails);
-      const newEntry = this.mapTransactionToGrid(this.transactionDetails);
+      // const newEntry = this.mapTransactionToBexRequest(this.transactionDetails); // TODO:
 
       // ✅ Update the array using a new reference to trigger change detection
-      this.rowData = [...this.rowData, newEntry];
+      // this.rowData = [...this.rowData, newEntry];
       this.initiateTransaction(bexRequest);
       // Reset form
       this.closeForm();
@@ -136,36 +169,21 @@ export class DashboardComponent implements OnInit {
 
   initiateTransaction(bexRequest: BexTransactionRequest) {
     this.transactionService.sendTransactionRequest(bexRequest).subscribe(
-      (response) => {
+      (response: any) => {
         console.log("Response BEX Token "+response)
         this.transactionDetails.holdingIdentiy = response.holdingIdentityShortHash
         alert('BEX Token Generated Successfully!');
         console.log('Request successfully sent to backend:', response);
       },
-      (error) => {
+      (error: any) => {
         console.error('Error sending request to backend:', error);
       }
     );
   }
 
-  getTransactionDetails(rowData: any) {
-    console.log("rowdata", rowData);
-    const requestBody: TransactionStatus = {
-      clientRequestId: rowData.clientRequestId,
-      flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
-      requestBody: {} // Modify if rowData needs to be included
-    };
   
-    this.transactionService.getStatusRequest(requestBody).subscribe(
-      (response) => {
-        // Directly display the response object
-        alert(`Transaction Details: ${response}`);
-      },
-      (error) => {
-        alert(`Error: ${error.message}`);
-      }
-    );
-  }
+
+  
 
   mapTransactionToBexRequest(transactionDetails: TransactionDetails): BexTransactionRequest {
     const requestBody = new RequestBody(
@@ -173,19 +191,15 @@ export class DashboardComponent implements OnInit {
       transactionDetails.currency,
 
       // Format seller, buyerBank, buyer entities properly
-      this.formatEntity(transactionDetails.sellerCN, transactionDetails.sellerO, transactionDetails.sellerL, transactionDetails.sellerC),
-      this.formatEntity(transactionDetails.buyerBankCN, transactionDetails.buyerBankO, transactionDetails.buyerBankL, transactionDetails.buyerBankC),
-      this.formatEntity(transactionDetails.buyerCN, transactionDetails.buyerO, transactionDetails.buyerL, transactionDetails.buyerC),
+      this.formatEntity(transactionDetails.sellerCN, transactionDetails.sellerOU ,transactionDetails.sellerO, transactionDetails.sellerL, transactionDetails.sellerC),
+      this.formatEntity(transactionDetails.buyerBankCN, transactionDetails.buyerBankOU ,transactionDetails.buyerBankO, transactionDetails.buyerBankL, transactionDetails.buyerBankC),
+      this.formatEntity(transactionDetails.buyerCN, transactionDetails.buyerOU ,transactionDetails.buyerO, transactionDetails.buyerL, transactionDetails.buyerC),
 
       // Include other fields directly
       transactionDetails.issuanceDate,
       transactionDetails.dueDate,
-      this.acceptance,
-      transactionDetails.avalisation,
       this.endorsements,
-      this.boeDocs,
       this.termsAndConditions,
-      this.iso20022Message
     );
 
     // Make sure you're passing the correct fields to the constructor of `BexTransactionRequest`
@@ -197,30 +211,30 @@ export class DashboardComponent implements OnInit {
   }
 
 // Ensures proper formatting of entities (seller, buyerBank, buyer)
-  formatEntity(cn: string, o: string, l: string, c: string): string {
-    return `${cn}, ${o}, ${l}, ${c}`;
+  formatEntity(cn: string, ou: string, o: string, l: string, c: string): string {
+    return `CN=${cn}, OU=${ou}, O=${o}, L=${l}, C=${c}`;
   }
 
 
-  mapTransactionToGrid(transaction: TransactionDetails): any {
+  mapTransactionToGrid(transaction: TransactionDetailsGrid): any {
     return {
-      clientRequestId: transaction.clientRequestId,
-      billType: transaction.billType,
+      clientRequestId: transaction.id,
+      billType: "Contract Document",
       amount: transaction.amount,
       currency: transaction.currency,
-      sellerCN: transaction.sellerCN,
+      sellerCN: transaction.drawer,
       // sellerO: transaction.sellerO,
       // sellerL: transaction.sellerL,
       // sellerC: transaction.sellerC,
-      buyerBankCN: transaction.buyerBankCN,
+      buyerBankCN: transaction.drawee,
       // buyerBankO: transaction.buyerBankO,
       // buyerBankL: transaction.buyerBankL,
       // buyerBankC: transaction.buyerBankC,
-      buyerCN: transaction.buyerCN,
+      buyerCN: transaction.payee,
       // buyerO: transaction.buyerO,
       // buyerL: transaction.buyerL,
       // buyerC: transaction.buyerC,
-      avalisation: transaction.avalisation,
+      avalisation: "Avalised",
       transactionStatus: 'Pending' // Default status
     };
   }
@@ -243,11 +257,11 @@ export class DashboardComponent implements OnInit {
     'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
 
   cnList = [
-    { cn: 'ABC Imports', o: 'ABC Imports', l: 'India', c: 'IN' },
-    { cn: 'Global Exports', o: 'Global Exports', l: 'India', c: 'IN' },
-    { cn: 'ICICI Bank', o: 'ICICI Bank', l: 'India', c: 'IN' },
-    { cn: 'RBI Bank', o: 'Reserve Bank of India', l: 'India', c: 'IN' },
-    { cn: 'LBG Bank', o: 'Lloyds Banking group', l: 'FrankfuLondonert', c: 'GB' },
+    { cn: 'ABC Imports', ou: "Imports Dept",o: 'ABC Imports', l: 'India', c: 'IN' },
+    { cn: 'Global Exports', ou: "Exports Dept",o: 'Global Exports', l: 'London', c: 'GB' },
+    { cn: 'ICICI Bank', ou: "Banking Dept",o: 'ICICI Bank', l: 'India', c: 'IN' },
+    { cn: 'RBI Bank', ou: "Banking Dept",o: 'Reserve Bank of India', l: 'India', c: 'IN' },
+    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
     // { cn: 'State Bank of India', o: 'SBI Corporate', l: 'Mumbai', c: 'India' },
     // { cn: 'HDFC Bank', o: 'HDFC Financial Services', l: 'Delhi', c: 'India' },
     // { cn: 'Citibank', o: 'Citibank NA', l: 'New York', c: 'USA' },
@@ -265,6 +279,7 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
 
   if (selectedItem) {
     (this.transactionDetails as any)[`${type}O`] = selectedItem.o;
+    (this.transactionDetails as any)[`${type}OU`] = selectedItem.ou;
     (this.transactionDetails as any)[`${type}L`] = selectedItem.l;
     (this.transactionDetails as any)[`${type}C`] = selectedItem.c;
   }
