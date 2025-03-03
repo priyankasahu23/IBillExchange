@@ -5,6 +5,7 @@ import {BexTransactionRequest} from '../model/bexRequest';
 import {Observable} from 'rxjs';
 import {TransactionStatus} from '../model/transaction-status';
 import {BexResponse} from '../model/bex-response';
+import { switchMap, tap, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import {BexResponse} from '../model/bex-response';
 export class TransactionService {
 
   constructor(private http: HttpClient) { }
-  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/92C32919F8DB';  // Update with actual backend URL
+  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/F67EE59351E5';  // Update with actual backend URL
 
   transactionDetails: TransactionDetails = new TransactionDetails('','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','','');
  // Initialize with default values
@@ -39,10 +40,22 @@ export class TransactionService {
     return this.http.post<BexResponse>(this.createTransactionUrl, bexRequest, { headers });
   }
 
-  getStatusRequest(request: TransactionStatus, holdingIdentity: string): Observable<any> {
-   this.transactionStatusUrl = `https://localhost:8888/api/v5_2/flow/92C32919F8DB`;
-    return this.http.post(this.transactionStatusUrl, request, {
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Basic YWRtaW46YWRtaW4=`}
+  getStatusRequest(request: TransactionStatus): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic YWRtaW46YWRtaW4=',
     });
-  }
+  
+    return this.http.post<any>(this.transactionStatusUrl, request, { headers }).
+    pipe(
+      tap(() => {
+        console.log('POST request completed');
+      }),
+      switchMap(() => {
+        const clientRequestId = request.clientRequestId;
+        return this.http.get<any>(`${this.transactionStatusUrl}/${clientRequestId}/result`, { headers });
+      })
+    );
+  }   
+  
 }

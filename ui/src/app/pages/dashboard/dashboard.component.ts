@@ -167,16 +167,17 @@ export class DashboardComponent implements OnInit {
   }
 
   getTransactionDetails(rowData: any) {
-    console.log("rowdata",rowData);
+    console.log("rowdata", rowData);
     const requestBody: TransactionStatus = {
       clientRequestId: rowData.clientRequestId,
       flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
       requestBody: {} // Modify if rowData needs to be included
     };
-
-    this.transactionService.getStatusRequest(requestBody, rowData.holdingIdentiy).subscribe(
+  
+    this.transactionService.getStatusRequest(requestBody).subscribe(
       (response) => {
-        alert(`Transaction Details: ${JSON.stringify(response)}`);
+        // Directly display the response object
+        alert(`Transaction Details: ${response}`);
       },
       (error) => {
         alert(`Error: ${error.message}`);
