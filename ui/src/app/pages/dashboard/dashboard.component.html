@@ -27,49 +27,48 @@
         </select>
       </label>
 
-        <label for="receiverBank">🏦 Receiver Bank Code:</label>
-        <input id="receiverBank" [(ngModel)]="transactionDetails.receiverBank" type="text" placeholder="Enter Receiver Bank Code" />
-
-        <label for="currency">💱 Currency:</label>
-        <input id="currency" [(ngModel)]="transactionDetails.currency" type="text" placeholder="Enter currency" />
+        <label >💱 Currency:
+          <select [(ngModel)]="transactionDetails.currency">
+            <option *ngFor="let currency of currencyList" [value]="currency" >{{ currency }}</option>
+          </select></label>
 
         <!-- Drawee Details -->
         <fieldset>
-          <legend>Drawee Details</legend>
-          <label>🏢 CN:
-            <select [(ngModel)]="transactionDetails.draweeCN" (change)="updateDetails('drawee')">
+          <legend>Seller Details</legend>
+          <label>🏢 Company Name:
+            <select [(ngModel)]="transactionDetails.sellerCN" (change)="updateDetails('seller')">
               <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
             </select>
           </label>
-          <label>💼 O: <input [(ngModel)]="transactionDetails.draweeO"></label>
-          <label>📍 L: <input [(ngModel)]="transactionDetails.draweeL"></label>
-          <label>🌍 C: <input [(ngModel)]="transactionDetails.draweeC"></label>
+          <label>💼 Organisation: <input [(ngModel)]="transactionDetails.sellerO"></label>
+          <label>📍 Location: <input [(ngModel)]="transactionDetails.sellerL"></label>
+          <label>🌍 Country: <input [(ngModel)]="transactionDetails.sellerC"></label>
         </fieldset>
 
-        <!-- Drawer Details -->
+        <!-- BuyerBank Details -->
         <fieldset>
-          <legend>Drawer Details</legend>
-          <label>🏢 CN:
-            <select [(ngModel)]="transactionDetails.drawerCN" (change)="updateDetails('drawer')">
+          <legend>Buyer Bank Details</legend>
+          <label>🏢 Company Name:
+            <select [(ngModel)]="transactionDetails.buyerBankCN" (change)="updateDetails('buyerBank')">
               <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
             </select>
           </label>
-          <label>💼 Organization: <input [(ngModel)]="transactionDetails.drawerO"></label>
-          <label>📍 Location: <input [(ngModel)]="transactionDetails.drawerL"></label>
-          <label>🌍 C: <input [(ngModel)]="transactionDetails.drawerC"></label>
+          <label>💼 Organization: <input [(ngModel)]="transactionDetails.buyerBankO"></label>
+          <label>📍 Location: <input [(ngModel)]="transactionDetails.buyerBankL"></label>
+          <label>🌍 Country: <input [(ngModel)]="transactionDetails.buyerBankC"></label>
         </fieldset>
 
-        <!-- Payee Details -->
+        <!-- buyer Details -->
         <fieldset>
-          <legend>Payee Details</legend>
-          <label>🏢 CN:
-            <select [(ngModel)]="transactionDetails.payeeCN" (change)="updateDetails('payee')">
+          <legend>Buyer Details</legend>
+          <label>🏢 Company Name:
+            <select [(ngModel)]="transactionDetails.buyerCN" (change)="updateDetails('buyer')">
               <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
             </select>
           </label>
-          <label>💼 O: <input [(ngModel)]="transactionDetails.payeeO"></label>
-          <label>📍 L: <input [(ngModel)]="transactionDetails.payeeL"></label>
-          <label>🌍 C: <input [(ngModel)]="transactionDetails.payeeC"></label>
+          <label>💼 Organization: <input [(ngModel)]="transactionDetails.buyerO"></label>
+          <label>📍 Location: <input [(ngModel)]="transactionDetails.buyerL"></label>
+          <label>🌍 Country: <input [(ngModel)]="transactionDetails.buyerC"></label>
         </fieldset>
 
         <!-- Issuance Date and Due Date -->
@@ -77,10 +76,10 @@
           <legend>Transaction Dates</legend>
           <div class="date-row">
             <label for="issuanceDate">📅 Issuance Date:</label>
-            <input id="issuanceDate" [(ngModel)]="transactionDetails.issuanceDate" type="text" placeholder="dd/mm/yyyy" />
+            <input id="issuanceDate" [(ngModel)]="transactionDetails.issuanceDate" type="text" placeholder="YYYY-MM-DD" />
 
             <label for="dueDate">⏳ Due Date:</label>
-            <input id="dueDate" [(ngModel)]="transactionDetails.dueDate" type="text" placeholder="dd/mm/yyyy" />
+            <input id="dueDate" [(ngModel)]="transactionDetails.dueDate" type="text" placeholder="YYYY-MM-DD" />
           </div>
         </fieldset>
 
@@ -116,7 +115,7 @@
     </div>
   </div>
 
-  <div *ngIf="userRole === 'LBG'" class="dashboard">
+  <div *ngIf="userRole === 'Buyer'" class="dashboard">
     <h1 class="title">{{ userRole }} Dashboard</h1>
     <div class="grid-container">
       <ag-grid-angular
@@ -136,9 +135,9 @@
         <p><b>Amount:</b> {{ selectedTransaction?.amount }}</p>
         <p><b>Receiver Bank:</b> {{ selectedTransaction?.receiverBank }}</p>
         <p><b>Currency:</b> {{ selectedTransaction?.currency }}</p>
-        <p><b>Drawee CN:</b> {{ selectedTransaction?.draweeCN }}</p>
-        <p><b>Drawer CN:</b> {{ selectedTransaction?.drawerCN }}</p>
-        <p><b>Payee CN:</b> {{ selectedTransaction?.payeeCN }}</p>
+        <p><b>seller:</b> {{ selectedTransaction?.sellerCN }}</p>
+        <p><b>buyerBank CN:</b> {{ selectedTransaction?.buyerBankCN }}</p>
+        <p><b>buyer CN:</b> {{ selectedTransaction?.buyerCN }}</p>
 
         <button class="green-btn" (click)="updateTransaction('Approved')">Approve</button>
         <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>

@@ -15,7 +15,7 @@ export class TransactionService {
   constructor(private http: HttpClient) { }
   private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/F67EE59351E5';  // Update with actual backend URL
 
-  transactionDetails: TransactionDetails = new TransactionDetails('','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','','');
+  transactionDetails: TransactionDetails = new TransactionDetails('','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','');
  // Initialize with default values
 
   getTransactionDetails(): TransactionDetails {
