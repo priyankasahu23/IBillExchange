@@ -1,0 +1,33 @@
+<div class="dashboard-container">
+    <h2>Compliance Dashboard</h2>
+  
+    <div class="section">
+      <h3>All Compliance Issues</h3>
+      <table>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Issue Type</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Timestamp</th>
+        </tr>
+        <tr *ngFor="let issue of complianceIssues">
+          <td>{{ issue.transactionId }}</td>
+          <td>{{ issue.issueType }}</td>
+          <td>{{ issue.severity }}</td>
+          <td>{{ issue.status }}</td>
+          <td>{{ issue.timestamp }}</td>
+        </tr>
+      </table>
+    </div>
+  
+    <div class="section">
+      <h3>Open Compliance Issues</h3>
+      <ul>
+        <li *ngFor="let issue of openIssues">
+          <strong>{{ issue.transactionId }}</strong> - {{ issue.issueType }} ({{ issue.severity }})
+        </li>
+      </ul>
+    </div>
+  </div>
+  
