@@ -35,7 +35,7 @@ export class LoginComponent {
         if (username === 'admin' && password === 'admin123') {
           sessionStorage.setItem('userRole', 'Admin');
           //sessionStorage.setItem('bank', bank); // Store selected bank
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/buyer-dashboard']);
         } else if (username === 'sbiuser' && password === 'sbi123') {
           sessionStorage.setItem('userRole', 'SBI');
           //sessionStorage.setItem('bank', bank);
@@ -43,7 +43,7 @@ export class LoginComponent {
         } else if (username === 'lbguser' && password === 'lbg123' )  {
           sessionStorage.setItem('userRole', 'Buyer');
           //sessionStorage.setItem('bank', bank);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/buyer-dashboard']);
         } else {
           this.errorMessage = 'Invalid username, password, or bank selection!';
         }

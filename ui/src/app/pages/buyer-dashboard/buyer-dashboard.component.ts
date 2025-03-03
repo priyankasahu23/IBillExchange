@@ -3,6 +3,7 @@ import {ColDef} from 'ag-grid-community';
 import {AgGridAngular} from 'ag-grid-angular';
 import {CommonModule} from '@angular/common';
 
+
 @Component({
   selector: 'app-buyer-dashboard',
   standalone: true,
@@ -14,6 +15,7 @@ import {CommonModule} from '@angular/common';
   styleUrl: './buyer-dashboard.component.css'
 })
 export class BuyerDashboardComponent {
+  userRole: string = 'Buyer';
   rowData: any[] = [
     { id: 1, amount: 5000, receiverBank: 'ABC Bank', currency: 'USD', draweeCN: 'XYZ Imports', drawerCN: 'LMN Ltd', payeeCN: 'PQR Corp', transactionStatus: 'Pending' }
   ];

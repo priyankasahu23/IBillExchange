@@ -1,5 +1,16 @@
 <div class="dashboard-container">
   <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
+  
+  <div *ngIf="userRole === 'Admin'">
+    <h1>Welcome, Admin</h1>
+    <p>This is the Admin Dashboard where you can manage users and payments.</p>
+  </div>
+
+  <div *ngIf="userRole === 'Buyer'">
+    <h1>Welcome, Buyer</h1>
+    <p>This is the Buyer Dashboard where you can view and manage transactions.</p>
+  </div>
+</div>
 <div class="grid-container">
   <ag-grid-angular
     class="ag-theme-alpine full-grid"
@@ -24,6 +35,5 @@
     <button class="green-btn" (click)="updateTransaction('Approved')">Approve</button>
     <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>
     <button class="close-btn" (click)="closePopup()">Close</button>
-  </div>
 </div>
 </div>
