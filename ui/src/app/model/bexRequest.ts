@@ -17,9 +17,9 @@ export class BexTransactionRequest {
 export class RequestBody {
   amount: number;
   currency: string;
-  drawee: string;
-  drawer: string;
-  payee: string;
+  seller: string;
+  buyerBank: string;
+  buyer: string;
   issueDate: string;
   dueDate: string;
   acceptance: string;
@@ -32,9 +32,9 @@ export class RequestBody {
   constructor(
     amount: number,
     currency: string,
-    drawee: string,
-    drawer: string,
-    payee: string,
+    seller: string,
+    buyerBank: string,
+    buyer: string,
     issueDate: string,
     dueDate: string,
     acceptance: string,
@@ -46,9 +46,9 @@ export class RequestBody {
   ) {
     this.amount = amount;
     this.currency = currency;
-    this.drawee = drawee;
-    this.drawer = drawer;
-    this.payee = payee;
+    this.seller = seller;
+    this.buyerBank = buyerBank;
+    this.buyer = buyer;
     this.issueDate = issueDate;
     this.dueDate = dueDate;
     this.acceptance = acceptance;

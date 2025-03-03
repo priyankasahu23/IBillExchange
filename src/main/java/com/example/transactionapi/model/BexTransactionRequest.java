@@ -36,9 +36,9 @@ public class BexTransactionRequest {
     public static class RequestBody {
         private double amount;
         private String currency;
-        private String drawee;
-        private String drawer;
-        private String payee;
+        private String seller;
+        private String buyerBank;
+        private String buyer;
         private String issueDate;
         private String dueDate;
         private String acceptance;
@@ -65,28 +65,28 @@ public class BexTransactionRequest {
             this.currency = currency;
         }
 
-        public String getDrawee() {
-            return drawee;
+        public String getSeller() {
+            return seller;
         }
 
-        public void setDrawee(String drawee) {
-            this.drawee = drawee;
+        public void setSeller(String seller) {
+            this.seller = seller;
         }
 
-        public String getDrawer() {
-            return drawer;
+        public String getBuyerBank() {
+            return buyerBank;
         }
 
-        public void setDrawer(String drawer) {
-            this.drawer = drawer;
+        public void setBuyerBank(String buyerBank) {
+            this.buyerBank = buyerBank;
         }
 
-        public String getPayee() {
-            return payee;
+        public String getBuyer() {
+            return buyer;
         }
 
-        public void setPayee(String payee) {
-            this.payee = payee;
+        public void setBuyer(String buyer) {
+            this.buyer = buyer;
         }
 
         public String getIssueDate() {

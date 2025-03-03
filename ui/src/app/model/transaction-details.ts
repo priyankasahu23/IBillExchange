@@ -2,20 +2,19 @@ export class TransactionDetails {
   clientRequestId: string;
   amount: number;
   billType: string;
-  receiverBank: string;
   currency: string;
-  draweeCN: string;
-  draweeO: string;
-  draweeL: string;
-  draweeC: string;
-  drawerCN: string;
-  drawerO: string;
-  drawerL: string;
-  drawerC: string;
-  payeeCN: string;
-  payeeO: string;
-  payeeL: string;
-  payeeC: string;
+  sellerCN: string;
+  sellerO: string;
+  sellerL: string;
+  sellerC: string;
+  buyerBankCN: string;
+  buyerBankO: string;
+  buyerBankL: string;
+  buyerBankC: string;
+  buyerCN: string;
+  buyerO: string;
+  buyerL: string;
+  buyerC: string;
   issuanceDate: string;
   dueDate: string;
   avalisation: string;
@@ -27,20 +26,19 @@ export class TransactionDetails {
     clientRequestId: string,
     billType: string,
     amount: number,
-    receiverBank: string,
     currency: string,
-    draweeCN: string,
-    draweeO: string,
-    draweeL: string,
-    draweeC: string,
-    drawerCN: string,
-    drawerO: string,
-    drawerL: string,
-    drawerC: string,
-    payeeCN: string,
-    payeeO: string,
-    payeeL: string,
-    payeeC: string,
+    sellerCN: string,
+    sellerO: string,
+  sellerL: string,
+  sellerC: string,
+  buyerBankCN: string,
+  buyerBankO: string,
+  buyerBankL: string,
+  buyerBankC: string,
+  buyerCN: string,
+  buyerO: string,
+  buyerL: string,
+  buyerC: string,
     issuanceDate: string,
     dueDate: string,
     avalisation: string,
@@ -50,20 +48,19 @@ export class TransactionDetails {
     this.clientRequestId = clientRequestId;
     this.amount = amount;
     this.billType = billType;
-    this.receiverBank = receiverBank;
     this.currency = currency;
-    this.draweeCN = draweeCN;
-    this.draweeO = draweeO;
-    this.draweeL = draweeL;
-    this.draweeC = draweeC;
-    this.drawerCN = drawerCN;
-    this.drawerO = drawerO;
-    this.drawerL = drawerL;
-    this.drawerC = drawerC;
-    this.payeeCN = payeeCN;
-    this.payeeO = payeeO;
-    this.payeeL = payeeL;
-    this.payeeC = payeeC;
+    this.sellerCN= sellerCN;
+    this.sellerO= sellerO;
+    this.sellerL= sellerL,
+      this.sellerC= sellerC,
+      this.buyerBankCN= buyerBankCN,
+      this.buyerBankO= buyerBankO,
+      this.buyerBankL= buyerBankL,
+      this.buyerBankC= buyerBankC,
+      this.buyerCN= buyerCN,
+      this.buyerO= buyerO,
+      this.buyerL= buyerL,
+      this.buyerC= buyerC,
     this.issuanceDate = issuanceDate;
     this.dueDate = dueDate;
     this.avalisation = avalisation;

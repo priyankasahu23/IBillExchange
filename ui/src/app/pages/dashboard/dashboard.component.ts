@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import {ClientSideRowModelModule, ColDef, GridApi, Module} from 'ag-grid-community';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {TransactionDetails} from '../../model/transaction-details';
 import {TransactionService} from '../../service/transaction.service';
 import {BexTransactionRequest, RequestBody} from '../../model/bexRequest';
@@ -23,7 +23,6 @@ export class DashboardComponent implements OnInit {
   isFormOpen = false;
   amount : number= 0;
   billType = '';
-  receiverBank = '';
   transactionStatus = 'In Progress';
   columnDefs: any[] = [];
   rowData: any[] = [];
@@ -55,44 +54,27 @@ export class DashboardComponent implements OnInit {
     //column for Buyer
     this.columnDefs = [
       { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
+      { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5},
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1},
-      { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1},
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-      { field: 'draweeDetails', headerName: 'Drawee Details', sortable: true, filter: true,flex: 1,
+      { field: 'buyerBankCN', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1,
         valueGetter: (params: any) => {
-          const cn = params.data.draweeCN || '';
-          const o = params.data.draweeO || '';
-          const l = params.data.draweeL || '';
-          const c = params.data.draweeC || '';
-
+          const cn = params.data.buyerBankCN || '';
           // Returning the combined string
-          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
-        }
-      },
-      { field: 'drawerCN', headerName: 'Drawer Details', sortable: true, filter: true, flex: 1,
-        valueGetter: (params: any) => {
-          const cn = params.data.drawerCN || '';
-          const o = params.data.drawerO || '';
-          const l = params.data.drawerL || '';
-          const c = params.data.drawerC || '';
-
-          // Returning the combined string
-          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+          return `${cn}`;
         }
         },
-      { field: 'payeeCN', headerName: 'Payee Details', sortable: true, filter: true, flex: 1 ,
+      { field: 'buyerCN', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1 ,
         valueGetter: (params: any) => {
-          const cn = params.data.payeeCN || '';
-          const o = params.data.payeeO || '';
-          const l = params.data.payeeL || '';
-          const c = params.data.payeeC || '';
+          const cn = params.data.buyerCN || '';
 
           // Returning the combined string
-          return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
+          return `${cn}`;
         }
       },
+      { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1},
       { field: 'avalisation', headerName: 'Avalisation', sortable: true, filter: true, flex: 1 },
-      { field: 'transactionStatus', headerName: 'Transaction Status', sortable: true, filter: true, flex: 1,
+      { field: 'transactionStatus', headerName: 'Transaction Status', sortable: true, filter: true, flex: 2,
         cellRenderer: (params: any) => {
           // Create a button for the 'Transaction Status' column
           const button = document.createElement('button');
@@ -105,20 +87,20 @@ export class DashboardComponent implements OnInit {
     ];
 
     // Default row data (you can have multiple default rows if needed)
-   /* this.rowData = [
+   this.rowData = [
       new TransactionDetails(
-        'REQ1740845361862',1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC', '10/10/2024','10/12/2024','Avalisation', 'Pending', ''
+        'REQ1740845361862','Documentary Collection',1000,'INR', 'CN-01', 'buyerBank-01', 'seller-01', 'sellerL', 'buyerBankCN', 'buyerBankO', 'buyerBankL', 'buyerBankC', 'buyerCN', 'buyerO', 'buyerL', 'buyerC', '10/10/2024','10/12/2024','Avalisation', 'Pending', ''
       ),
       new TransactionDetails(
-        'REQ1740845361876',5000,'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
+        'REQ1740845361876','Documentary Collection',5000, 'INR', 'CN-02', 'buyerBank-02', 'seller-02', 'sellerL2', 'buyerBankCN2', 'buyerBankO2', 'buyerBankL2', 'buyerBankC2', 'buyerCN2', 'buyerO2', 'buyerL2', 'buyerC2','10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
       ),
       new TransactionDetails(
-        'REQ1740845361890',1000, 'SBI', 'INR', 'CN-01', 'Drawer-01', 'Drawee-01', 'DraweeL', 'DrawerCN', 'DrawerO', 'DrawerL', 'DrawerC', 'PayeeCN', 'PayeeO', 'PayeeL', 'PayeeC','10/10/2024','10/12/2024', 'Avalisation', 'Pending',''
+        'REQ1740845361890','Documentary Collection',1000, 'INR', 'CN-01', 'buyerBank-01', 'seller-01', 'sellerL', 'buyerBankCN', 'buyerBankO', 'buyerBankL', 'buyerBankC', 'buyerCN', 'buyerO', 'buyerL', 'buyerC','10/10/2024','10/12/2024', 'Avalisation', 'Pending',''
       ),
       new TransactionDetails(
-        'REQ1740845361789',5000, 'ICICI', 'INR', 'CN-02', 'Drawer-02', 'Drawee-02', 'DraweeL2', 'DrawerCN2', 'DrawerO2', 'DrawerL2', 'DrawerC2', 'PayeeCN2', 'PayeeO2', 'PayeeL2', 'PayeeC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
+        'REQ1740845361789','Documentary Collection',5000, 'INR', 'CN-02', 'buyerBank-02', 'seller-02', 'sellerL2', 'buyerBankCN2', 'buyerBankO2', 'buyerBankL2', 'buyerBankC2', 'buyerCN2', 'buyerO2', 'buyerL2', 'buyerC2', '10/10/2024','10/12/2024', 'Avalisation', 'Completed',''
       ),
-    ];*/
+    ];
   }
 
 
@@ -129,7 +111,7 @@ export class DashboardComponent implements OnInit {
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
-      '','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','','',''
+      '','',0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','','',''
     );
   }
 
@@ -189,10 +171,10 @@ export class DashboardComponent implements OnInit {
       transactionDetails.amount,
       transactionDetails.currency,
 
-      // Format drawee, drawer, payee entities properly
-      this.formatEntity(transactionDetails.draweeCN, transactionDetails.draweeO, transactionDetails.draweeL, transactionDetails.draweeC),
-      this.formatEntity(transactionDetails.drawerCN, transactionDetails.drawerO, transactionDetails.drawerL, transactionDetails.drawerC),
-      this.formatEntity(transactionDetails.payeeCN, transactionDetails.payeeO, transactionDetails.payeeL, transactionDetails.payeeC),
+      // Format seller, buyerBank, buyer entities properly
+      this.formatEntity(transactionDetails.sellerCN, transactionDetails.sellerO, transactionDetails.sellerL, transactionDetails.sellerC),
+      this.formatEntity(transactionDetails.buyerBankCN, transactionDetails.buyerBankO, transactionDetails.buyerBankL, transactionDetails.buyerBankC),
+      this.formatEntity(transactionDetails.buyerCN, transactionDetails.buyerO, transactionDetails.buyerL, transactionDetails.buyerC),
 
       // Include other fields directly
       transactionDetails.issuanceDate,
@@ -213,7 +195,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-// Ensures proper formatting of entities (drawee, drawer, payee)
+// Ensures proper formatting of entities (seller, buyerBank, buyer)
   formatEntity(cn: string, o: string, l: string, c: string): string {
     return `${cn}, ${o}, ${l}, ${c}`;
   }
@@ -222,21 +204,21 @@ export class DashboardComponent implements OnInit {
   mapTransactionToGrid(transaction: TransactionDetails): any {
     return {
       clientRequestId: transaction.clientRequestId,
+      billType: transaction.billType,
       amount: transaction.amount,
-      receiverBank: transaction.receiverBank,
       currency: transaction.currency,
-      draweeCN: transaction.draweeCN,
-      // draweeO: transaction.draweeO,
-      // draweeL: transaction.draweeL,
-      // draweeC: transaction.draweeC,
-      drawerCN: transaction.drawerCN,
-      // drawerO: transaction.drawerO,
-      // drawerL: transaction.drawerL,
-      // drawerC: transaction.drawerC,
-      payeeCN: transaction.payeeCN,
-      // payeeO: transaction.payeeO,
-      // payeeL: transaction.payeeL,
-      // payeeC: transaction.payeeC,
+      sellerCN: transaction.sellerCN,
+      // sellerO: transaction.sellerO,
+      // sellerL: transaction.sellerL,
+      // sellerC: transaction.sellerC,
+      buyerBankCN: transaction.buyerBankCN,
+      // buyerBankO: transaction.buyerBankO,
+      // buyerBankL: transaction.buyerBankL,
+      // buyerBankC: transaction.buyerBankC,
+      buyerCN: transaction.buyerCN,
+      // buyerO: transaction.buyerO,
+      // buyerL: transaction.buyerL,
+      // buyerC: transaction.buyerC,
       avalisation: transaction.avalisation,
       transactionStatus: 'Pending' // Default status
     };
@@ -255,6 +237,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  currencyList: string[] = ['INR','EURO','DOLLARS','GBP'];
   billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
     'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
 
@@ -274,7 +257,7 @@ export class DashboardComponent implements OnInit {
   ];
 
 
-updateDetails(type: 'drawee' | 'drawer' | 'payee') {
+updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
   const selectedCN = this.transactionDetails[`${type}CN` as keyof TransactionDetails];
 
   const selectedItem = this.cnList.find(item => item.cn === selectedCN);
@@ -291,34 +274,34 @@ updateDetails(type: 'drawee' | 'drawer' | 'payee') {
     { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
     { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1 },
     { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-    { field: 'draweeDetails', headerName: 'Drawee Details', sortable: true, filter: true,flex: 1,
+    { field: 'sellerDetails', headerName: 'seller Details', sortable: true, filter: true,flex: 1,
       valueGetter: (params: any) => {
-        const cn = params.data.draweeCN || '';
-        const o = params.data.draweeO || '';
-        const l = params.data.draweeL || '';
-        const c = params.data.draweeC || '';
+        const cn = params.data.sellerCN || '';
+        const o = params.data.sellerO || '';
+        const l = params.data.sellerL || '';
+        const c = params.data.sellerC || '';
 
         // Returning the combined string
         return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
       }
     },
-    { field: 'drawerCN', headerName: 'Drawer Details', sortable: true, filter: true, flex: 1,
+    { field: 'buyerBankCN', headerName: 'buyerBank Details', sortable: true, filter: true, flex: 1,
       valueGetter: (params: any) => {
-        const cn = params.data.drawerCN || '';
-        const o = params.data.drawerO || '';
-        const l = params.data.drawerL || '';
-        const c = params.data.drawerC || '';
+        const cn = params.data.buyerBankCN || '';
+        const o = params.data.buyerBankO || '';
+        const l = params.data.buyerBankL || '';
+        const c = params.data.buyerBankC || '';
 
         // Returning the combined string
         return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
       }
     },
-    { field: 'payeeCN', headerName: 'Payee Details', sortable: true, filter: true, flex: 1 ,
+    { field: 'buyerCN', headerName: 'buyer Details', sortable: true, filter: true, flex: 1 ,
       valueGetter: (params: any) => {
-        const cn = params.data.payeeCN || '';
-        const o = params.data.payeeO || '';
-        const l = params.data.payeeL || '';
-        const c = params.data.payeeC || '';
+        const cn = params.data.buyerCN || '';
+        const o = params.data.buyerO || '';
+        const l = params.data.buyerL || '';
+        const c = params.data.buyerC || '';
 
         // Returning the combined string
         return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
