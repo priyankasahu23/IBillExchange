@@ -338,9 +338,9 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
     { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1},
     {
       field: 'transactionStatus',
-      headerName: 'Approval Pending',
+      headerName: 'Approve',
       flex: 1,
-      cellRenderer: (params: any) => `<button class="red-btn">Approval Pending</button>`,
+      cellRenderer: (params: any) => `<button class="red-btn">Approve</button>`,
       onCellClicked: (params: any) => this.openPopup(params.data, params.api)
     }
   ];

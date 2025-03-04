@@ -29,9 +29,9 @@ export class BuyerDashboardComponent {
     { field: 'payeeCN', headerName: 'Payee CN', sortable: true, filter: true, flex: 1 },
     {
       field: 'transactionStatus',
-      headerName: 'Approval Pending',
+      headerName: 'Approval',
       flex: 1,
-      cellRenderer: (params: any) => `<button class="red-btn">Approval Pending</button>`,
+      cellRenderer: (params: any) => `<button class="red-btn">Approve</button>`,
       onCellClicked: (params: any) => this.openPopup(params.data)
     }
   ];
