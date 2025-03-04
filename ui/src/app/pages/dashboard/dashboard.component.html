@@ -109,8 +109,7 @@
         [pagination]="true"
         (gridReady)="onGridReady($event)"
         [modules]="modules"
-        rowSelection="single"
-        (rowSelected)="onRowSelected($event)">
+        rowSelection="single">
       </ag-grid-angular>
     </div>
   </div>
@@ -124,6 +123,7 @@
         [rowData]="rowData"
         [pagination]="true"
         (gridReady)="onGridReady($event)"
+        (rowSelected)="onRowSelected($event)"
         [modules]="modules">
       </ag-grid-angular>
     </div>
@@ -133,13 +133,14 @@
       <div class="popup-content">
         <h3>Transaction Summary</h3>
         <p><b>Amount:</b> {{ selectedTransaction?.amount }}</p>
-        <p><b>Receiver Bank:</b> {{ selectedTransaction?.receiverBank }}</p>
+        <p><b>Product Type:</b>Contract Document</p>
         <p><b>Currency:</b> {{ selectedTransaction?.currency }}</p>
-        <p><b>seller:</b> {{ selectedTransaction?.sellerCN }}</p>
-        <p><b>buyerBank CN:</b> {{ selectedTransaction?.buyerBankCN }}</p>
-        <p><b>buyer CN:</b> {{ selectedTransaction?.buyerCN }}</p>
+        <p><b>Seller Name:</b> {{ selectedTransaction?.sellerName }}</p>
+        <p><b>Buyer Bank Name:</b> {{ selectedTransaction?.buyerBankName }}</p>
+        <p><b>Due Date:</b> {{ selectedTransaction?.dueDate }}</p>
+        <p><b>Avalised:</b> Yes</p>
 
-        <button class="green-btn" (click)="updateTransaction('Approved')">Approve</button>
+        <button class="green-btn" (click)="approveTransaction(selectedTransaction)">Approve</button>
         <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>
         <button class="close-btn" (click)="closePopup()">Close</button>
       </div>

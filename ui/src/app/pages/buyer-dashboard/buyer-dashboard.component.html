@@ -7,8 +7,9 @@
   </div>
 
   <div *ngIf="userRole === 'Buyer'">
-    <h1>Welcome, Buyer</h1>
-    <p>This is the Buyer Dashboard where you can view and manage transactions.</p>
+    <!--<h1>Welcome, Buyer</h1>-->
+    <h1 class="title">{{ userRole }} Dashboard</h1>
+    <!--<p>This is the Buyer Dashboard where you can view and manage transactions.</p>-->
   </div>
 </div>
 <div class="grid-container">

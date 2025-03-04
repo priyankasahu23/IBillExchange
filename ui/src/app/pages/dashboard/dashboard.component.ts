@@ -10,6 +10,7 @@ import {TransactionService} from '../../service/transaction.service';
 import {BexTransactionRequest, RequestBody} from '../../model/bexRequest';
 import {HttpClient} from '@angular/common/http';
 import {TransactionStatus} from '../../model/transaction-status';
+import { IOUAcceptance } from '../../model/iouAcceptance';
 
 
 @Component({
@@ -66,28 +67,27 @@ export class DashboardComponent implements OnInit {
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
       {
-        field: 'drawee', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1,
-        valueGetter: (params: any) => {
-          const cn = params.data.buyerBankCN || '';
-          // Returning the combined string
-          return `${cn}`;
-        }
+        field: 'buyerBank', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1,
+        // valueGetter: (params: any) => {
+        //   const cn = params.data.buyerBankCN || '';
+        //   // Returning the combined string
+        //   return `${cn}`;
+        // }
       },
       {
-        field: 'payee', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1,
-        valueGetter: (params: any) => {
-          const cn = params.data.buyerCN || '';
-          // Returning the combined string
-          return `${cn}`;
-        }
+        field: 'buyer', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1,
+        // valueGetter: (params: any) => {
+        //   const cn = params.data.buyerCN || '';
+        //   // Returning the combined string
+        //   return `${cn}`;
+        // }
       },
       { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1 },
       { field: 'avalisation', headerName: 'Avalisation', sortable: true, filter: true, flex: 1 },
     ];
 
     // Fetch and populate table data
-
-    this.getTransactionResult();
+        this.getTransactionResult();
   }
 
   getTransactionResult(): void {
@@ -100,7 +100,8 @@ export class DashboardComponent implements OnInit {
     this.transactionService.getStatusRequest(requestBody).subscribe(
           (response: any) => {
             // Directly display the response object
-            alert(`Transaction Details: ${response}`);
+            // alert(`Transaction Details: ${response}`);
+            console.log("response",response);
           },
           (error: { message: any; }) => {
             alert(`Error: ${error.message}`)});
@@ -109,11 +110,19 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => {
       this.transactionService.fetchTransactionResult(clientRequestId).subscribe(
         (result: any) => {
+        
           this.transactionResultGrid = result;
-          console.log(this.transactionDetailsGrid);
-
           // Assuming the API returns an array of TransactionDetails
-          this.rowData = this.transactionResultGrid.json;
+
+          console.log("result.....",result);
+          // this.rowData = this.transactionResultGrid.json;
+          if(this.userRole == 'SBI'){
+          this.rowData = this.mapTransactionResponse(this.transactionResultGrid.json);
+          console.log("Seller this.rowData",this.rowData);
+          }else if(this.userRole == 'Buyer'){
+            this.rowData = this.mapTransactionBuyerResponse(this.transactionResultGrid.json);
+          }
+          
         },
         (error: any) => {
           console.error('Error fetching transaction result', error);
@@ -121,6 +130,36 @@ export class DashboardComponent implements OnInit {
       );
     }, 3000); // 3000 milliseconds = 3 seconds delay
   }
+
+  extractCN(dn: any): string {
+    if (typeof dn === 'string') {
+      const match = dn.match(/CN=([^,]+)/);
+      return match ? match[1] : dn; // Return extracted CN or full string if CN is not found
+    } else if (typeof dn === 'object' && dn.CN) {
+      return dn.CN; // Access CN directly if drawee is a JSON object
+    }
+    return ''; // Return empty string if undefined or invalid format
+  }
+
+
+  mapTransactionResponse(response: any[]): any[] {
+  if (!response || response.length === 0) {
+    return [];
+  }
+
+  return response.map(item => ({
+    id: item.id,
+    billType: 'Documentary Collection',
+    amount: item.amount,
+    currency: item.currency,
+    buyerBank: this.extractCN(item.drawee),
+    buyer: this.extractCN(item.payee),
+    // issueDate: item.issueDate ? new Date(item.issueDate * 1000).toLocaleDateString() : '',
+    dueDate: item.dueDate ? new Date(item.dueDate * 1000).toLocaleDateString() : '',
+    avalisation: 'Yes'
+  }));
+}
+
 
   // getTransactionDetails() {
   //   //console.log("rowdata", rowData);
@@ -251,10 +290,6 @@ export class DashboardComponent implements OnInit {
       const selectedRowData = event.node.data;
       console.log("selectedRowData",selectedRowData)
       // Populate the form with selected row data
-      this.transactionDetails = { ...selectedRowData };
-
-      // Open the form (assuming `openForm()` handles showing the form)
-      this.openForm();
     }
   }
 
@@ -292,56 +327,47 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
 }
 
   columnDef_Buyer: ColDef[] = [
-    { field: 'clientRequestId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
+    { field: 'transactionId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
+    { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1 },
     { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
-    { field: 'receiverBank', headerName: 'Receiver Bank', sortable: true, filter: true, flex: 1 },
     { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-    { field: 'sellerDetails', headerName: 'seller Details', sortable: true, filter: true,flex: 1,
-      valueGetter: (params: any) => {
-        const cn = params.data.sellerCN || '';
-        const o = params.data.sellerO || '';
-        const l = params.data.sellerL || '';
-        const c = params.data.sellerC || '';
-
-        // Returning the combined string
-        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
-      }
+    { field: 'sellerName', headerName: 'seller Name', sortable: true, filter: true,flex: 1
     },
-    { field: 'buyerBankCN', headerName: 'buyerBank Details', sortable: true, filter: true, flex: 1,
-      valueGetter: (params: any) => {
-        const cn = params.data.buyerBankCN || '';
-        const o = params.data.buyerBankO || '';
-        const l = params.data.buyerBankL || '';
-        const c = params.data.buyerBankC || '';
-
-        // Returning the combined string
-        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
-      }
+    { field: 'buyerBankName', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1
     },
-    { field: 'buyerCN', headerName: 'buyer Details', sortable: true, filter: true, flex: 1 ,
-      valueGetter: (params: any) => {
-        const cn = params.data.buyerCN || '';
-        const o = params.data.buyerO || '';
-        const l = params.data.buyerL || '';
-        const c = params.data.buyerC || '';
-
-        // Returning the combined string
-        return `{ cn: ${cn}, o: ${o}, l: ${l}, c: ${c} }`;
-      }
-    },
+    { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1},
     {
       field: 'transactionStatus',
       headerName: 'Approval Pending',
       flex: 1,
       cellRenderer: (params: any) => `<button class="red-btn">Approval Pending</button>`,
-      onCellClicked: (params: any) => this.openPopup(params.data)
+      onCellClicked: (params: any) => this.openPopup(params.data, params.api)
     }
   ];
+  mapTransactionBuyerResponse(response: any[]): any[] {
+    console.log("this.transactionResultGrid.json",response);
+    if (!response || response.length === 0) {
+      return [];
+    }
+  
+    return response.map(item => ({
+      transactionId: item.id,
+      billType: 'Documentary Collection',
+      amount: item.amount,
+      currency: item.currency,
+      sellerName: this.extractCN(item.drawer),
+      buyerBankName: this.extractCN(item.drawee),
+      // buyer: this.extractCN(item.payee),
+      // issueDate: item.issueDate ? new Date(item.issueDate * 1000).toLocaleDateString() : '',
+      dueDate: item.dueDate ? new Date(item.dueDate * 1000).toLocaleDateString() : '',
+      avalisation: 'Yes'
+    }));
+  }
 
   selectedTransaction: any = null;
   showPopup: boolean = false;
 
-  openPopup(transaction: any) {
+  openPopup(transaction: any, gridApi: any) {
     console.log("In Open pop Up......",transaction);
     this.selectedTransaction = transaction;
     this.showPopup = true;
@@ -355,10 +381,42 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
     if (this.selectedTransaction) {
       this.selectedTransaction.transactionStatus = status;
       this.rowData = [...this.rowData]; // Refresh grid
+
       alert(`Transaction ${status}`);
       this.closePopup();
     }
   }
+
+
+  approveTransaction(status: string) {
+    if (this.selectedTransaction) {
+      console.log("this.selectedTransaction",this.selectedTransaction);
+      this.selectedTransaction.transactionStatus = status;
+       const request: IOUAcceptance = {
+        //hard code after backend run
+            clientRequestId: `REQ1741092188009`,
+            flowClassName: "com.r3.developers.samples.obligation.workflows.IOUAcceptFlow",
+            requestBody: {
+                payeeAcceptance: true,
+                iouID: this.selectedTransaction.id
+            }
+        };
+      this.transactionService.getStatusRequest(request).subscribe(
+        (response: any) => {
+          // Directly display the response object
+          // alert(`Transaction Details: ${response}`);
+          console.log("response",response);
+        },
+        (error: { message: any; }) => {
+          alert(`Error: ${error.message}`)});
+
+      alert(`Transaction ${status}`);
+      this.closePopup();
+    }
+  }
+
+  
+  
 
   addTransaction(newTransaction: any) {
     newTransaction.id = this.rowData.length + 1;

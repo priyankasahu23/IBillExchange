@@ -43,7 +43,7 @@ export class LoginComponent {
         } else if (username === 'lbguser' && password === 'lbg123' )  {
           sessionStorage.setItem('userRole', 'Buyer');
           //sessionStorage.setItem('bank', bank);
-          this.router.navigate(['/buyer-dashboard']);
+          this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid username, password, or bank selection!';
         }

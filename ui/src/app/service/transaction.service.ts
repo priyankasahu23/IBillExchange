@@ -6,6 +6,7 @@ import {BexTransactionRequest} from '../model/bexRequest';
 import {Observable} from 'rxjs';
 import {TransactionStatus} from '../model/transaction-status';
 import {BexResponse} from '../model/bex-response';
+import { IOUAcceptance } from '../model/iouAcceptance';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import {BexResponse} from '../model/bex-response';
 export class TransactionService {
 
   constructor(private http: HttpClient) { }
-  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/F67EE59351E5';  // Update with actual backend URL
+  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/E60E6D52EEC7';  // Update with actual backend URL
 
   transactionDetailsGrid: TransactionDetailsGrid = new TransactionDetailsGrid('',0, '', '', '', '', 0, 0, '', '', [], '', '', '');
  // Initialize with default values
@@ -48,7 +49,7 @@ export class TransactionService {
     });
 
     // First, call the POST API, then call the GET API
-    return this.http.post<any>("https://localhost:8888/api/v5_2/flow/F67EE59351E5", request, { headers });
+    return this.http.post<any>("https://localhost:8888/api/v5_2/flow/E60E6D52EEC7", request, { headers });
   }
 
     // New method to fetch data from the given endpoint
@@ -58,8 +59,18 @@ export class TransactionService {
         'Content-Type': 'application/json',
       'Authorization': 'Basic YWRtaW46YWRtaW4=',
       });
-      const url = `https://localhost:8888/api/v5_2/flow/F67EE59351E5/${clientRequestId}/result`;
+      const url = `https://localhost:8888/api/v5_2/flow/E60E6D52EEC7/${clientRequestId}/result`;
       return this.http.get<any>(url, { headers });
+    }
+
+    acceptanceRequest(request: IOUAcceptance): Observable<any> {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic YWRtaW46YWRtaW4=',
+      });
+  
+      // First, call the POST API, then call the GET API
+      return this.http.post<any>("https://localhost:8888/api/v5_2/flow/E60E6D52EEC7", request, { headers });
     }
   
 }
