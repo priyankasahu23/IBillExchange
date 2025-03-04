@@ -6,7 +6,6 @@ import {BexTransactionRequest} from '../model/bexRequest';
 import {Observable} from 'rxjs';
 import {TransactionStatus} from '../model/transaction-status';
 import {BexResponse} from '../model/bex-response';
-import { switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

@@ -105,15 +105,21 @@ export class DashboardComponent implements OnInit {
           (error: { message: any; }) => {
             alert(`Error: ${error.message}`)});
 
-    this.transactionService.fetchTransactionResult(clientRequestId).subscribe((result: any) => {
-      this.transactionResultGrid = result;
-      console.log(this.transactionDetailsGrid);
+    // Add a delay before the second API call
+    setTimeout(() => {
+      this.transactionService.fetchTransactionResult(clientRequestId).subscribe(
+        (result: any) => {
+          this.transactionResultGrid = result;
+          console.log(this.transactionDetailsGrid);
 
-      // Assuming the API returns an array of TransactionDetails
-      this.rowData = this.transactionResultGrid.json;
-    }, (error: any) => {
-      console.error('Error fetching transaction result', error);
-    });
+          // Assuming the API returns an array of TransactionDetails
+          this.rowData = this.transactionResultGrid.json;
+        },
+        (error: any) => {
+          console.error('Error fetching transaction result', error);
+        }
+      );
+    }, 3000); // 3000 milliseconds = 3 seconds delay
   }
 
   // getTransactionDetails() {
