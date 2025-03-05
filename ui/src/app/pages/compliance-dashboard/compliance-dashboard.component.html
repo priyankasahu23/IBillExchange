@@ -1,0 +1,51 @@
+<!-- Top Navbar -->
+<div class="navbar">
+    <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
+    <span>Compliance Dashboard</span>
+</div>
+
+<!-- Main Container -->
+<div class="compliance-container">
+    <div class="dashboard-card">
+        <h1>Compliance Dashboard</h1>
+        <p>Welcome to the compliance dashboard. Here you will find key insights.</p>
+
+        <!-- AG Grid Example -->
+        <ag-grid-angular 
+            class="ag-theme-alpine"
+            [rowData]="rowData"
+            [columnDefs]="columnDefs"
+            (gridReady)="onGridReady($event)"
+            (rowSelected)="onRowSelected($event)">
+        </ag-grid-angular>
+    </div>
+</div>
+
+<!-- Conditional Dashboards for SBI and Buyer Roles -->
+<div *ngIf="userRole === ''" class="dashboard">
+    <h2 class="title">{{ userRole }} Dashboard</h2>
+    <div class="grid-container">
+        <ag-grid-angular
+            class="ag-theme-alpine full-grid"
+            [columnDefs]="columnDefs"
+            [rowData]="rowData"
+            [pagination]="true"
+            (gridReady)="onGridReady($event)"
+            rowSelection="single">
+        </ag-grid-angular>
+    </div>
+</div>
+
+<div *ngIf="userRole === ''" class="dashboard">
+    <h2 class="title">{{ userRole }} Dashboard</h2>
+    <div class="grid-container">
+        <ag-grid-angular
+            class="ag-theme-alpine full-grid"
+            [columnDefs]="columnDefs"
+            [rowData]="rowData"
+            [pagination]="true"
+            (gridReady)="onGridReady($event)"
+            (rowSelected)="onRowSelected($event)">
+        </ag-grid-angular>
+    </div>
+</div>

@@ -64,6 +64,7 @@ export class DashboardComponent implements OnInit {
     this.columnDefs = [
       { field: 'id', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1 },
       { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5 },
+      { field: 'subproductType', headerName: 'Subproduct Type', sortable: true, filter: true, flex: 1.5 },
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
       {
@@ -296,7 +297,9 @@ export class DashboardComponent implements OnInit {
   currencyList: string[] = ['INR','EURO','DOLLARS','GBP'];
   billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
     'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
-
+    subproductTypeList: string[] = ['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange','Confirmed Letter of Credit',
+      'Standby Letter of Credit','Back-to-Back Letter of Credit','Revolving Letter of Credit','Deferred Payment Letter of Credit'
+  ];
   cnList = [
     { cn: 'ABC Imports', ou: "Imports Dept",o: 'ABC Imports', l: 'India', c: 'IN' },
     { cn: 'Global Exports', ou: "Exports Dept",o: 'Global Exports', l: 'London', c: 'GB' },
@@ -329,6 +332,7 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
   columnDef_Buyer: ColDef[] = [
     { field: 'transactionId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
     { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1 },
+    { field: 'subproductType', headerName: 'Subproduct Type', sortable: true, filter: true, flex: 1 },
     { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
     { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
     { field: 'sellerName', headerName: 'seller Name', sortable: true, filter: true,flex: 1
@@ -424,4 +428,13 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
     this.rowData.sort((a, b) => b.id - a.id); // Sort latest first
     this.rowData = [...this.rowData];
   }
+  handleFileUpload(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      console.log("Selected file:", file.name);
+      // You can process the file here (e.g., upload it)
+    }
+  }
+  
 }

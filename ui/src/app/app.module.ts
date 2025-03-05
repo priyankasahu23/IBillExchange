@@ -5,11 +5,13 @@ import {AgGridModule} from 'ag-grid-angular';
 //import {ClientSideRowModelModule} from 'ag-grid-community';
 import {provideHttpClient} from '@angular/common/http';
 import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard.component'; // Import your component
+import { ComplianceDashboardComponent } from './pages/compliance-dashboard/compliance-dashboard.component';
 
 @NgModule({
   declarations: [
   AppComponent,
-  BuyerDashboardComponent // Declare the Buyer Dashboard Component
+  BuyerDashboardComponent,// Declare the Buyer Dashboard Component
+  ComplianceDashboardComponent
 ],   
     imports: [
         //AppComponent,
