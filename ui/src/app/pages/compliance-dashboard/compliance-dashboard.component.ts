@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule} from '@angular/common';
 import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ClientSideRowModelModule, ColDef, GridApi, Module } from 'ag-grid-community';
@@ -45,6 +45,7 @@ export class ComplianceDashboardComponent implements OnInit {
       { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5 },
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
+      { field: 'seller', headerName: 'Seller Name', sortable: true, filter: true, flex: 1 },
       { field: 'buyerBank', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1 },
       { field: 'buyer', headerName: 'Buyer Name', sortable: true, filter: true, flex: 1 },
       { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1 },
@@ -56,7 +57,7 @@ export class ComplianceDashboardComponent implements OnInit {
   }
 
   getTransactionResult(): void {
-    const clientRequestId = 'REQ1741094856716'; // Replace with actual clientRequestId
+    const clientRequestId = this.generateClientRequestId(); ; // Replace with actual clientRequestId
     const requestBody: TransactionStatus = {
       clientRequestId: clientRequestId,
       flowClassName: 'com.r3.developers.samples.obligation.workflows.ListIOUFlow',
@@ -68,7 +69,7 @@ export class ComplianceDashboardComponent implements OnInit {
         console.log("response", response);
       },
       (error: { message: any; }) => {
-        alert(`Error: ${error.message}`);
+        // alert(`Error: ${error.message}`);
       }
     );
 
@@ -87,6 +88,11 @@ export class ComplianceDashboardComponent implements OnInit {
     }, 3000); // 3 seconds delay
   }
 
+  generateClientRequestId(): string {
+    const timestamp = new Date().getTime();
+    return `REQ${timestamp}`;
+  }
+
   mapTransactionResponse(response: any[]): any[] {
     if (!response || response.length === 0) {
       return [];
@@ -96,6 +102,7 @@ export class ComplianceDashboardComponent implements OnInit {
       billType: 'Documentary Collection',
       amount: item.amount,
       currency: item.currency,
+      seller: this.extractCN(item.drawer),
       buyerBank: this.extractCN(item.drawee),
       buyer: this.extractCN(item.payee),
       dueDate: item.dueDate ? new Date(item.dueDate * 1000).toLocaleDateString() : '',

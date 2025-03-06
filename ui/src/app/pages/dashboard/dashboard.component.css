@@ -81,6 +81,22 @@ select, input {
   font-weight: bold;
 }
 
+.form-group {
+  display: flex;
+  /* align-items: center; */
+  margin-bottom: 5px;
+}
+
+.form-group label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+
+.form-group span {
+  font-size: 14px;
+}
+
 
 /* Basic Modal Styles */
 .modal {

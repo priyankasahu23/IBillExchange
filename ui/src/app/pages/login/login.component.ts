@@ -36,20 +36,20 @@ export class LoginComponent {
           sessionStorage.setItem('userRole', 'Admin');
           //sessionStorage.setItem('bank', bank); // Store selected bank
           this.router.navigate(['/buyer-dashboard']);
-        } else if (username === 'sbiuser' && password === 'sbi123') {
-          sessionStorage.setItem('userRole', 'SBI');
+        } else if (username === 'lbguser' && password === 'lbg123' )  {
+          sessionStorage.setItem('userRole', 'Seller');
           //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/dashboard']);
-        } else if (username === 'lbguser' && password === 'lbg123' )  {
+        } else if (username === 'sbiuser' && password === 'sbi123') {
           sessionStorage.setItem('userRole', 'Buyer');
           //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/dashboard']);
         }else if (username === 'rbi' && password === 'rbi123' )  {
-          sessionStorage.setItem('userRole', 'Buyer');
+          sessionStorage.setItem('userRole', 'RBI');
           //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/compliance-dashboard']);
-        } else if (username === 'icici' && password === 'icici123' )  {
-          sessionStorage.setItem('userRole', 'Buyer');
+        } else if (username === 'boe' && password === 'boe123' )  {
+          sessionStorage.setItem('userRole', 'BOE');
           //sessionStorage.setItem('bank', bank);
           this.router.navigate(['/compliance-dashboard']);
         } 

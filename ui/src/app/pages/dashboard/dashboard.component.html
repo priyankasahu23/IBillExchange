@@ -1,13 +1,13 @@
-html <div class="dashboard-container">
+<div class="dashboard-container">
   <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
   <!--<div *ngIf="userRole === 'Admin'">
     <h1>Welcome, Admin</h1>
     <p>This is the Admin Dashboard where you can manage users and payments.</p>
   </div>-->
 
-  <div *ngIf="userRole === 'SBI'" class="dashboard">
+  <div *ngIf="userRole === 'Seller'" class="dashboard">
     <!-- Header -->
-    <h1 class="title">{{ userRole }} Dashboard</h1>
+    <h1 class="title">Welcome, Global Exports!</h1>
 
     <!-- Add Product Button -->
     <button class="add-button" (click)="openForm()">➕ Create New Transaction Request</button>
@@ -22,11 +22,16 @@ html <div class="dashboard-container">
             <input id="amount" [(ngModel)]="transactionDetails.amount" type="number" placeholder="Enter amount" />
 
             <label>💰 Product Type:
-                <select [(ngModel)]="transactionDetails.billType">
+                <select [(ngModel)]="transactionDetails.billType"  (change)="onProductTypeChange($event)">
                     <option *ngFor="let billType of billTypeList" [value]="billType">{{ billType }}</option>
                 </select>
             </label>
 
+            <label *ngIf="transactionDetails.billType === 'Documentary Collection'">Sub Type:
+              <select [(ngModel)]="selectedSubType">
+                  <option *ngFor="let subType of subTypes" [value]="subType">{{ subType }}</option>
+              </select>
+          </label>
             <label>💱 Currency:
                 <select [(ngModel)]="transactionDetails.currency">
                     <option *ngFor="let currency of currencyList" [value]="currency">{{ currency }}</option>
@@ -34,10 +39,10 @@ html <div class="dashboard-container">
             </label>
             <!-- Seller Details -->
             <fieldset>
-                <legend>Seller Details</legend>
+                <legend>Seller Bank</legend>
                 <label>🏢 Company Name:
                     <select [(ngModel)]="transactionDetails.sellerCN" (change)="updateDetails('seller')">
-                        <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
+                        <option *ngFor="let item of sellerList" [value]="item.cn">{{ item.cn }}</option>
                     </select>
                 </label>
                 <label>💼 Organisation: <input [(ngModel)]="transactionDetails.sellerO"></label>
@@ -84,7 +89,7 @@ html <div class="dashboard-container">
             </fieldset>
 
             <label>✅ Avalisation:</label>
-            <input [(ngModel)]="transactionDetails.avalisation" type="text" />
+            <input [(ngModel)]="transactionDetails.avalisation" type="text" placeholder="Yes or No"/>
             <!-- File Upload Section -->
             <fieldset>
               <legend>📄 Upload Supporting Document</legend>

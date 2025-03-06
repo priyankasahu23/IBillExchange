@@ -2,6 +2,7 @@ export class TransactionDetails {
   clientRequestId: string;
   amount: number;
   billType: string;
+  subproductType: string;
   currency: string;
   sellerCN: string;
   sellerO: string;
@@ -54,6 +55,7 @@ export class TransactionDetails {
     this.clientRequestId = clientRequestId;
     this.amount = amount;
     this.billType = billType;
+    this.subproductType ="Usance Bill of Exchange";
     this.currency = currency;
     this.sellerCN= sellerCN;
     this.sellerO= sellerO;

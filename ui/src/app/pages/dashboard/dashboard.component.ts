@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
     this.columnDefs = [
       { field: 'id', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1 },
       { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1.5 },
-      { field: 'subproductType', headerName: 'Subproduct Type', sortable: true, filter: true, flex: 1.5 },
+      { field: 'subProductType', headerName: 'Sub Product Type', sortable: true, filter: true, flex: 1.5 },
       { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
       { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
       {
@@ -117,7 +117,8 @@ export class DashboardComponent implements OnInit {
 
           console.log("result.....",result);
           // this.rowData = this.transactionResultGrid.json;
-          if(this.userRole == 'SBI'){
+          if(this.userRole == 'Seller'){
+            console.log("In userRole......",this.userRole)
           this.rowData = this.mapTransactionResponse(this.transactionResultGrid.json);
           console.log("Seller this.rowData",this.rowData);
           }else if(this.userRole == 'Buyer'){
@@ -147,10 +148,11 @@ export class DashboardComponent implements OnInit {
   if (!response || response.length === 0) {
     return [];
   }
-
+  console.log("In mapTransactionResponse response",response);
   return response.map(item => ({
     id: item.id,
     billType: 'Documentary Collection',
+    subProductType: 'Usance Bill of Exchange',
     amount: item.amount,
     currency: item.currency,
     buyerBank: this.extractCN(item.drawee),
@@ -203,6 +205,7 @@ export class DashboardComponent implements OnInit {
       this.transactionDetails.clientRequestId =  this.generateClientRequestId();
       const bexRequest = this.mapTransactionToBexRequest(this.transactionDetails);
       console.log("this.transactionDetails",this.transactionDetails);
+      console.log("bexRequest",bexRequest);
       // const newEntry = this.mapTransactionToBexRequest(this.transactionDetails); // TODO:
 
       // ✅ Update the array using a new reference to trigger change detection
@@ -212,6 +215,10 @@ export class DashboardComponent implements OnInit {
       this.closeForm();
     }
   }
+
+  onAvalisationChange(event: any) {
+    this.transactionDetails.avalisation = event.target.checked ? 'yes' : '';
+}
 
   initiateTransaction(bexRequest: BexTransactionRequest) {
     this.transactionService.sendTransactionRequest(bexRequest).subscribe(
@@ -237,10 +244,10 @@ export class DashboardComponent implements OnInit {
       transactionDetails.currency,
 
       // Format seller, buyerBank, buyer entities properly
-      this.formatEntity(transactionDetails.sellerCN, transactionDetails.sellerOU ,transactionDetails.sellerO, transactionDetails.sellerL, transactionDetails.sellerC),
+      this.formatEntity('Global Exports', 'Exports Dept' ,'Global Exports', 'London', 'GB'),
       this.formatEntity(transactionDetails.buyerBankCN, transactionDetails.buyerBankOU ,transactionDetails.buyerBankO, transactionDetails.buyerBankL, transactionDetails.buyerBankC),
       this.formatEntity(transactionDetails.buyerCN, transactionDetails.buyerOU ,transactionDetails.buyerO, transactionDetails.buyerL, transactionDetails.buyerC),
-
+       
       // Include other fields directly
       transactionDetails.issuanceDate,
       transactionDetails.dueDate,
@@ -294,12 +301,18 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  currencyList: string[] = ['INR','EURO','DOLLARS','GBP'];
+  currencyList: string[] = ['INR','EUR','USD','GBP'];
   billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
     'Trade Credit','Receivable Financing','Documentary Collection','Bank Guarantees','Export and Import Loans'] ;
-    subproductTypeList: string[] = ['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange','Confirmed Letter of Credit',
-      'Standby Letter of Credit','Back-to-Back Letter of Credit','Revolving Letter of Credit','Deferred Payment Letter of Credit'
+    subproductTypeList: string[] = ['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange'
   ];
+  selectedSubType = '';
+  sellerList = [
+    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
+    { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
+    { cn: 'Royal Bank of Scotland', o: 'Royal Bank of Scotland', l: 'ScotLand', c: 'UK' },
+    { cn: 'NatWest', o: 'NatWest', l: 'London', c: 'UK' }
+  ]
   cnList = [
     { cn: 'ABC Imports', ou: "Imports Dept",o: 'ABC Imports', l: 'India', c: 'IN' },
     { cn: 'Global Exports', ou: "Exports Dept",o: 'Global Exports', l: 'London', c: 'GB' },
@@ -314,7 +327,16 @@ export class DashboardComponent implements OnInit {
     // { cn: 'Standard Chartered', o: 'Standard Chartered PLC', l: 'Singapore', c: 'Singapore' },
     // { cn: 'HSBC', o: 'HSBC Holdings', l: 'Hong Kong', c: 'China' }
   ];
+  subTypes : string[] =['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange'
+  ];
 
+
+  onProductTypeChange(event: any) {
+    const selectedType = event.target.value;
+    console.log("selectedType",selectedType);
+    // this.subTypes = this.subTypeMapping[selectedType] || [];
+    this.selectedSubType = '';
+}
 
 updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
   const selectedCN = this.transactionDetails[`${type}CN` as keyof TransactionDetails];
@@ -332,7 +354,6 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
   columnDef_Buyer: ColDef[] = [
     { field: 'transactionId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
     { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1 },
-    { field: 'subproductType', headerName: 'Subproduct Type', sortable: true, filter: true, flex: 1 },
     { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
     { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
     { field: 'sellerName', headerName: 'seller Name', sortable: true, filter: true,flex: 1
@@ -398,23 +419,26 @@ updateDetails(type: 'seller' | 'buyerBank' | 'buyer') {
       this.selectedTransaction.transactionStatus = status;
        const request: IOUAcceptance = {
         //hard code after backend run
-            clientRequestId: `REQ1741092188009`,
+            clientRequestId: this.generateClientRequestId(),
             flowClassName: "com.r3.developers.samples.obligation.workflows.IOUAcceptFlow",
             requestBody: {
                 payeeAcceptance: true,
-                iouID: this.selectedTransaction.id
+                iouID: this.selectedTransaction.transactionId
             }
         };
-      this.transactionService.getStatusRequest(request).subscribe(
+      this.transactionService.acceptanceRequest(request).subscribe(
         (response: any) => {
           // Directly display the response object
           // alert(`Transaction Details: ${response}`);
           console.log("response",response);
+          if(response.flowStatus == 'START_REQUESTED'){
+            alert("Approved for Transaction Request");
+          }
         },
         (error: { message: any; }) => {
           alert(`Error: ${error.message}`)});
 
-      alert(`Transaction ${status}`);
+      // alert(`Transaction ${status}`);
       this.closePopup();
     }
   }
