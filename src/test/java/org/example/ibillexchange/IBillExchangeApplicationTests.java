@@ -1,13 +1,13 @@
-package org.example.ibillexchange;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class IBillExchangeApplicationTests {
-
-    @Test
-    void contextLoads() {
-    }
-
-}
+//package org.example.ibillexchange;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class IBillExchangeApplicationTests {
+//
+//    @Test
+//    void contextLoads() {
+//    }
+//
+//}

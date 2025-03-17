@@ -1,0 +1,21 @@
+<div class="dashboard">
+  <!-- Header -->
+  <h1 class="title">Welcome, Global Exports!</h1>
+
+  <!-- Add Product Button -->
+  <button class="add-button" (click)="openForm()">➕ Create New Transaction Request</button>
+
+  <app-transaction-form *ngIf="isFormOpen"></app-transaction-form>
+  <!-- Data Grid -->
+  <div class="grid-container">
+    <ag-grid-angular
+      class="ag-theme-alpine full-grid"
+      [columnDefs]="columnDefs"
+      [rowData]="rowData"
+      [pagination]="true"
+      (gridReady)="onGridReady($event)"
+      [modules]="modules"
+      rowSelection="single">
+    </ag-grid-angular>
+  </div>
+</div>

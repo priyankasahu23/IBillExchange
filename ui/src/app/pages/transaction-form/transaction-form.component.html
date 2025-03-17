@@ -1,0 +1,92 @@
+<!-- Modal Form -->
+<div class="modal">
+  <div class="modal-content">
+    <h2>Enter Transaction Details</h2>
+
+    <!-- Amount input -->
+    <label for="amount">💰 Amount :</label>
+    <input id="amount" [(ngModel)]="transactionDetails.amount" type="number" placeholder="Enter amount" />
+
+    <label>📦 Product Type:
+      <select [(ngModel)]="transactionDetails.billType" (change)="onProductTypeChange($event)">
+        <option *ngFor="let billType of billTypeList" [value]="billType">{{ billType }}</option>
+      </select>
+    </label>
+
+    <label *ngIf="transactionDetails.billType === 'Bill of Exchange'">📜 Sub Type:
+      <select [(ngModel)]="selectedSubType">
+        <option *ngFor="let subType of subTypes" [value]="subType">{{ subType }}</option>
+      </select>
+    </label>
+
+    <!-- Seller Details -->
+    <fieldset>
+      <legend>Seller Bank</legend>
+      <label>🏢 Company Name:
+        <select [(ngModel)]="transactionDetails.sellerCN" (change)="updateDetails('seller')">
+          <option *ngFor="let item of sellerList" [value]="item.cn">{{ item.cn }}</option>
+        </select>
+      </label>
+      <label>💼 Organisation: <input [(ngModel)]="transactionDetails.sellerO"></label>
+      <label>📍 Location: <input [(ngModel)]="transactionDetails.sellerL"></label>
+      <label>🌍 Country: <input [(ngModel)]="transactionDetails.sellerC"></label>
+    </fieldset>
+
+    <!-- Buyer Bank Details -->
+    <fieldset>
+      <legend>Buyer Bank Details</legend>
+      <label>🏢 Company Name:
+        <select [(ngModel)]="transactionDetails.buyerBankCN" (change)="updateDetails('buyerBank')">
+          <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
+        </select>
+      </label>
+      <label>💼 Organization: <input [(ngModel)]="transactionDetails.buyerBankO"></label>
+      <label>📍 Location: <input [(ngModel)]="transactionDetails.buyerBankL"></label>
+      <label>🌍 Country: <input [(ngModel)]="transactionDetails.buyerBankC"></label>
+    </fieldset>
+
+    <!-- Buyer Details -->
+    <fieldset>
+      <legend>Buyer Details</legend>
+      <label>🏢 Company Name:
+        <select [(ngModel)]="transactionDetails.buyerCN" (change)="updateDetails('buyer')">
+          <option *ngFor="let item of cnList" [value]="item.cn">{{ item.cn }}</option>
+        </select>
+      </label>
+      <label>💼 Organization: <input [(ngModel)]="transactionDetails.buyerO"></label>
+      <label>📍 Location: <input [(ngModel)]="transactionDetails.buyerL"></label>
+      <label>🌍 Country: <input [(ngModel)]="transactionDetails.buyerC"></label>
+    </fieldset>
+
+    <!-- Issuance Date and Due Date -->
+    <fieldset>
+      <legend>Transaction Dates</legend>
+      <div class="date-row">
+        <label for="issuanceDate">📅 Issuance Date:</label>
+        <input id="issuanceDate" [(ngModel)]="transactionDetails.issuanceDate" type="text" placeholder="YYYY-MM-DD" />
+
+        <label for="dueDate">⏳ Due Date:</label>
+        <input id="dueDate" [(ngModel)]="transactionDetails.dueDate" type="text" placeholder="YYYY-MM-DD" />
+      </div>
+    </fieldset>
+
+    <label>✅ Avalisation:</label>
+    <input [(ngModel)]="transactionDetails.avalisation" type="text" placeholder="Yes or No"/>
+    <!-- File Upload Section -->
+    <fieldset>
+      <legend>📄 Upload Supporting Document</legend>
+      <input type="file" (change)="handleFileUpload($event)" accept=".pdf, .jpg, .png, .docx" />
+    </fieldset>
+
+    <!-- Buttons -->
+    <div class="modal-buttons">
+      <button class="cancel-button" (click)="closeForm()">Cancel</button>
+      <button
+        class="submit-button"
+        (click)="submitForm()">
+        <!--            [disabled]="!amount || amount <= 0 || !billType || billType.length < 3"-->
+        Submit
+      </button>
+    </div>
+  </div>
+</div>

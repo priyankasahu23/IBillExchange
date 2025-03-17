@@ -99,7 +99,7 @@ export class ComplianceDashboardComponent implements OnInit {
     }
     return response.map(item => ({
       id: item.id,
-      billType: 'Documentary Collection',
+      billType: 'Bill of Exchange',
       amount: item.amount,
       currency: item.currency,
       seller: this.extractCN(item.drawer),
@@ -126,5 +126,5 @@ export class ComplianceDashboardComponent implements OnInit {
   onRowSelected(event: any): void {
     console.log("Row selected", event);
   }
-  
+
 }

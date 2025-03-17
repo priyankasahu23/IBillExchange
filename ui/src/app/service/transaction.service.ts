@@ -14,7 +14,7 @@ import { IOUAcceptance } from '../model/iouAcceptance';
 export class TransactionService {
 
   constructor(private http: HttpClient) { }
-  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/F2307C76B816';  // Update with actual backend URL
+  private createTransactionUrl = 'https://localhost:8888/api/v5_2/flow/03DEBA2EBCEB';  //Seller Update with actual backend URL
 
   transactionDetailsGrid: TransactionDetailsGrid = new TransactionDetailsGrid('',0, '', '', '', '', 0, 0, '', '', [], '', '', '');
  // Initialize with default values
@@ -48,8 +48,8 @@ export class TransactionService {
       'Authorization': 'Basic YWRtaW46YWRtaW4=',
     });
 
-    // First, call the POST API, then call the GET API
-    return this.http.post<any>("https://localhost:8888/api/v5_2/flow/F2307C76B816", request, { headers });
+    // First, call the POST API, then call the GET API -seller
+    return this.http.post<any>("https://localhost:8888/api/v5_2/flow/03DEBA2EBCEB", request, { headers });
   }
 
     // New method to fetch data from the given endpoint
@@ -59,7 +59,7 @@ export class TransactionService {
         'Content-Type': 'application/json',
       'Authorization': 'Basic YWRtaW46YWRtaW4=',
       });
-      const url = `https://localhost:8888/api/v5_2/flow/F2307C76B816/${clientRequestId}/result`;
+      const url = `https://localhost:8888/api/v5_2/flow/03DEBA2EBCEB/${clientRequestId}/result`;  //seller
       return this.http.get<any>(url, { headers });
     }
 
@@ -68,9 +68,9 @@ export class TransactionService {
         'Content-Type': 'application/json',
         'Authorization': 'Basic YWRtaW46YWRtaW4=',
       });
-  
-      // First, call the POST API, then call the GET API
-      return this.http.post<any>("https://localhost:8888/api/v5_2/flow/94E3AD200B16", request, { headers });
+
+      // Buyer - First, call the POST API, then call the GET API
+      return this.http.post<any>("https://localhost:8888/api/v5_2/flow/13C1384160C1", request, { headers });
     }
-  
+
 }

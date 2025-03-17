@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 import {TransactionDetails} from '../model/transaction-details';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
 
+  private transactionSubject = new BehaviorSubject<TransactionDetails[]>([]);
+  transaction$ = this.transactionSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  sendTransaction(request: TransactionDetails): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>("apiUrl/need to replace with api/", request, { headers });
+  addTransaction(transaction: any) {
+    const updatedTransactions = [...this.transactionSubject.value, transaction];
+    this.transactionSubject.next(updatedTransactions);
   }
 }

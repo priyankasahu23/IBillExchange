@@ -1,40 +1,39 @@
 <div class="dashboard-container">
   <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
-  
-  <div *ngIf="userRole === 'Admin'">
-    <h1>Welcome, Admin</h1>
-    <p>This is the Admin Dashboard where you can manage users and payments.</p>
+
+  <h1 class="title">{{ userRole }} Dashboard</h1>
+  <!-- Add Product Button -->
+  <button class="add-button" (click)="openForm()">➕ Create New Transaction Request</button>
+
+  <app-transaction-form *ngIf="isFormOpen"></app-transaction-form>
+
+  <div class="grid-container">
+    <ag-grid-angular
+      class="ag-theme-alpine full-grid"
+      [columnDefs]="columnDef_Buyer"
+      [rowData]="rowData"
+      [pagination]="true"
+      (gridReady)="onGridReady($event)"
+      (rowSelected)="onRowSelected($event)"
+      [modules]="modules">
+    </ag-grid-angular>
   </div>
 
-  <div *ngIf="userRole === 'Buyer'">
-    <!--<h1>Welcome, Buyer</h1>-->
-    <h1 class="title">{{ userRole }} Dashboard</h1>
-    <!--<p>This is the Buyer Dashboard where you can view and manage transactions.</p>-->
+  <!-- Popup for Approval -->
+  <div class="popup" *ngIf="showPopup">
+    <div class="popup-content">
+      <h3>Transaction Summary</h3>
+      <p><b>Amount:</b> {{ selectedTransaction?.amount }}</p>
+      <p><b>Product Type:</b>Contract Document</p>
+      <p><b>Currency:</b> {{ selectedTransaction?.currency }}</p>
+      <p><b>Seller Name:</b> {{ selectedTransaction?.sellerName }}</p>
+      <p><b>Buyer Bank Name:</b> {{ selectedTransaction?.buyerBankName }}</p>
+      <p><b>Due Date:</b> {{ selectedTransaction?.dueDate }}</p>
+      <p><b>Avalised:</b> Yes</p>
+
+      <button class="green-btn" (click)="approveTransaction(selectedTransaction)">Approve</button>
+      <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>
+      <button class="close-btn" (click)="closePopup()">Close</button>
+    </div>
   </div>
-</div>
-<div class="grid-container">
-  <ag-grid-angular
-    class="ag-theme-alpine full-grid"
-    [columnDefs]="columnDefs"
-    [rowData]="rowData"
-    [pagination]="true"
-    rowSelection="single">
-  </ag-grid-angular>
-</div>
-
-<!-- Popup for Approval -->
-<div class="popup" *ngIf="showPopup">
-  <div class="popup-content">
-    <h3>Transaction Summary</h3>
-    <p><b>Amount:</b> {{ selectedTransaction?.amount }}</p>
-    <p><b>Receiver Bank:</b> {{ selectedTransaction?.receiverBank }}</p>
-    <p><b>Currency:</b> {{ selectedTransaction?.currency }}</p>
-    <p><b>Drawee CN:</b> {{ selectedTransaction?.draweeCN }}</p>
-    <p><b>Drawer CN:</b> {{ selectedTransaction?.drawerCN }}</p>
-    <p><b>Payee CN:</b> {{ selectedTransaction?.payeeCN }}</p>
-
-    <button class="green-btn" (click)="updateTransaction('Approved')">Approve</button>
-    <button class="red-btn" (click)="updateTransaction('Rejected')">Reject</button>
-    <button class="close-btn" (click)="closePopup()">Close</button>
-</div>
 </div>

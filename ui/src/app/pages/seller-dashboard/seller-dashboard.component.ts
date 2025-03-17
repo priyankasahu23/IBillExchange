@@ -1,31 +1,30 @@
 import {Component, Renderer2} from '@angular/core';
-import {ClientSideRowModelModule, ColDef, Module} from 'ag-grid-community';
-import {AgGridAngular} from 'ag-grid-angular';
-import {CommonModule} from '@angular/common';
+import {ClientSideRowModelModule, GridApi, Module} from 'ag-grid-community';
 import {TransactionDetails} from '../../model/transaction-details';
 import {TransactionDetailsGrid} from '../../model/transaction-details-result';
-import {FormGroup} from '@angular/forms';
+import {FormGroup, FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {TransactionService} from '../../service/transaction.service';
 import {HttpClient} from '@angular/common/http';
 import {TransactionStatus} from '../../model/transaction-status';
 import {BexTransactionRequest, RequestBody} from '../../model/bexRequest';
-import {IOUAcceptance} from '../../model/iouAcceptance';
+import {AgGridAngular} from 'ag-grid-angular';
+import {NgForOf, NgIf} from '@angular/common';
 import {TransactionFormComponent} from '../transaction-form/transaction-form.component';
 
-
 @Component({
-  selector: 'app-buyer-dashboard',
-  standalone: true,
+  selector: 'app-seller-dashboard',
   imports: [
+    FormsModule,
     AgGridAngular,
-    CommonModule,
-    TransactionFormComponent
+    TransactionFormComponent,
+    NgIf
   ],
-  templateUrl: './buyer-dashboard.component.html',
-  styleUrl: './buyer-dashboard.component.css'
+  templateUrl: './seller-dashboard.component.html',
+  styleUrl: './seller-dashboard.component.css'
 })
-export class BuyerDashboardComponent {
+export class SellerDashboardComponent {
+
   userRole: string = ''; // To store user role
   isFormOpen = false;
   amount : number= 0;
@@ -47,11 +46,30 @@ export class BuyerDashboardComponent {
   private acceptance: string = '';
   private boeDocs: string = '';
   private termsAndConditions: string = 't&c.........';
-  private iso20022Message: string   = 'iso20022Message';
-  // private clientRequestId: string
   private flowClassName: string = 'com.r3.developers.samples.obligation.workflows.IOUIssueFlow';
+  selectedSubType = '';
+  sellerList = [
+    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
+    { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
+    { cn: 'Royal Bank of Scotland', o: 'Royal Bank of Scotland', l: 'ScotLand', c: 'UK' },
+    { cn: 'NatWest', o: 'NatWest', l: 'London', c: 'UK' }
+  ]
+  cnList = [
+    { cn: 'ABC Imports', ou: "Imports Dept",o: 'ABC Imports', l: 'India', c: 'IN' },
+    { cn: 'Global Exports', ou: "Exports Dept",o: 'Global Exports', l: 'London', c: 'GB' },
+    { cn: 'ICICI Bank', ou: "Banking Dept",o: 'ICICI Bank', l: 'India', c: 'IN' },
+    { cn: 'RBI Bank', ou: "Banking Dept",o: 'Reserve Bank of India', l: 'India', c: 'IN' },
+    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
+  ];
+  subTypes : string[] =['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange'
+  ];
+  currencyList: string[] = ['INR','EUR','USD','GBP'];
+  billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
+    'Trade Credit','Receivable Financing','Bill of Exchange','Bank Guarantees','Export and Import Loans'] ;
+  private gridApi!: GridApi;
 
-  constructor(private router: Router, private renderer: Renderer2, private transactionService: TransactionService, private http: HttpClient) {
+
+  constructor(private transactionService: TransactionService, private http: HttpClient, private router: Router) {
     this.transactionDetailsGrid = this.transactionService.getTransactionDetailsGrid();
   }
 
@@ -105,8 +123,6 @@ export class BuyerDashboardComponent {
     };
     this.transactionService.getStatusRequest(requestBody).subscribe(
       (response: any) => {
-        // Directly display the response object
-        // alert(`Transaction Details: ${response}`);
         console.log("response",response);
       },
       (error: { message: any; }) => {
@@ -126,9 +142,10 @@ export class BuyerDashboardComponent {
             console.log("In userRole......",this.userRole)
             this.rowData = this.mapTransactionResponse(this.transactionResultGrid.json);
             console.log("Seller this.rowData",this.rowData);
-          }else if(this.userRole == 'Buyer'){
-            this.rowData = this.mapTransactionBuyerResponse(this.transactionResultGrid.json);
           }
+          // else if(this.userRole == 'Buyer'){
+          //   this.rowData = this.mapTransactionBuyerResponse(this.transactionResultGrid.json);
+          // }
 
         },
         (error: any) => {
@@ -168,6 +185,12 @@ export class BuyerDashboardComponent {
     }));
   }
 
+  openForm() {
+    this.isFormOpen = true;
+    console.log("this.isFormOpen",this.isFormOpen);
+    this.router.navigate(['transaction-form']);
+  }
+
   closeForm() {
     this.isFormOpen = false;
     this.transactionDetails = new TransactionDetails(
@@ -177,6 +200,8 @@ export class BuyerDashboardComponent {
 
   onGridReady(params: any) {
     params.api.autoSizeColumns();
+    this.gridApi = params.api;
+    this.getTransactionResult();
   }
 
   submitForm() {
@@ -190,13 +215,10 @@ export class BuyerDashboardComponent {
       // ✅ Update the array using a new reference to trigger change detection
       // this.rowData = [...this.rowData, newEntry];
       this.initiateTransaction(bexRequest);
+      this.getTransactionResult();
       // Reset form
       this.closeForm();
     }
-  }
-
-  onAvalisationChange(event: any) {
-    this.transactionDetails.avalisation = event.target.checked ? 'yes' : '';
   }
 
   initiateTransaction(bexRequest: BexTransactionRequest) {
@@ -212,10 +234,6 @@ export class BuyerDashboardComponent {
       }
     );
   }
-
-
-
-
 
   mapTransactionToBexRequest(transactionDetails: TransactionDetails): BexTransactionRequest {
     const requestBody = new RequestBody(
@@ -247,53 +265,6 @@ export class BuyerDashboardComponent {
     return `CN=${cn}, OU=${ou}, O=${o}, L=${l}, C=${c}`;
   }
 
-
-  mapTransactionToGrid(transaction: TransactionDetailsGrid): any {
-    return {
-      clientRequestId: transaction.id,
-      billType: "Bill of Exchange",
-      amount: transaction.amount,
-      currency: transaction.currency,
-      sellerCN: transaction.drawer,
-      buyerBankCN: transaction.drawee,
-      buyerCN: transaction.payee,
-      avalisation: "Avalised",
-      transactionStatus: 'Pending' // Default status
-    };
-  }
-
-  onRowSelected(event: any): void {
-    // Check if a row is selected
-    if (event.node.selected) {
-      const selectedRowData = event.node.data;
-      console.log("selectedRowData",selectedRowData)
-      // Populate the form with selected row data
-    }
-  }
-
-  currencyList: string[] = ['INR','EUR','USD','GBP'];
-  billTypeList: string[] =['Letter of Credit(LC)','Purchase Order(PO) Finanace','Supply Chain Finance(SCF)',
-    'Trade Credit','Receivable Financing','Bill of Exchange','Bank Guarantees','Export and Import Loans'] ;
-  subproductTypeList: string[] = ['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange'
-  ];
-  selectedSubType = '';
-  sellerList = [
-    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
-    { cn: 'Barclays', o: 'Barclays UK', l: 'London', c: 'UK' },
-    { cn: 'Royal Bank of Scotland', o: 'Royal Bank of Scotland', l: 'ScotLand', c: 'UK' },
-    { cn: 'NatWest', o: 'NatWest', l: 'London', c: 'UK' }
-  ]
-  cnList = [
-    { cn: 'ABC Imports', ou: "Imports Dept",o: 'ABC Imports', l: 'India', c: 'IN' },
-    { cn: 'Global Exports', ou: "Exports Dept",o: 'Global Exports', l: 'London', c: 'GB' },
-    { cn: 'ICICI Bank', ou: "Banking Dept",o: 'ICICI Bank', l: 'India', c: 'IN' },
-    { cn: 'RBI Bank', ou: "Banking Dept",o: 'Reserve Bank of India', l: 'India', c: 'IN' },
-    { cn: 'LBG Bank', ou: "Banking Dept",o: 'Lloyds Banking Group', l: 'London', c: 'GB' },
-  ];
-  subTypes : string[] =['Discounting Bill of Exchange','Usance Bill of Exchange','Negotiable Bill of Exchange'
-  ];
-
-
   onProductTypeChange(event: any) {
     const selectedType = event.target.value;
     console.log("selectedType",selectedType);
@@ -314,107 +285,6 @@ export class BuyerDashboardComponent {
     }
   }
 
-  columnDef_Buyer: ColDef[] = [
-    { field: 'transactionId', headerName: 'clientRequestId', sortable: true, filter: true, flex: 1},
-    { field: 'billType', headerName: 'Product Type', sortable: true, filter: true, flex: 1 },
-    { field: 'amount', headerName: 'Amount', sortable: true, filter: true, flex: 1 },
-    { field: 'currency', headerName: 'Currency', sortable: true, filter: true, flex: 1 },
-    { field: 'sellerName', headerName: 'seller Name', sortable: true, filter: true,flex: 1
-    },
-    { field: 'buyerBankName', headerName: 'Buyer Bank Name', sortable: true, filter: true, flex: 1
-    },
-    { field: 'dueDate', headerName: 'Due Date', sortable: true, filter: true, flex: 1},
-    {
-      field: 'transactionStatus',
-      headerName: 'Approve',
-      flex: 1,
-      cellRenderer: (params: any) => `<button class="red-btn">Approve</button>`,
-      onCellClicked: (params: any) => this.openPopup(params.data, params.api)
-    }
-  ];
-  mapTransactionBuyerResponse(response: any[]): any[] {
-    console.log("this.transactionResultGrid.json",response);
-    if (!response || response.length === 0) {
-      return [];
-    }
-
-    return response.map(item => ({
-      transactionId: item.id,
-      billType: 'Bill of Exchange',
-      amount: item.amount,
-      currency: item.currency,
-      sellerName: this.extractCN(item.drawer),
-      buyerBankName: this.extractCN(item.drawee),
-      // buyer: this.extractCN(item.payee),
-      // issueDate: item.issueDate ? new Date(item.issueDate * 1000).toLocaleDateString() : '',
-      dueDate: item.dueDate ? new Date(item.dueDate * 1000).toLocaleDateString() : '',
-      avalisation: 'Yes'
-    }));
-  }
-
-  selectedTransaction: any = null;
-  showPopup: boolean = false;
-
-  openPopup(transaction: any, gridApi: any) {
-    console.log("In Open pop Up......",transaction);
-    this.selectedTransaction = transaction;
-    this.showPopup = true;
-  }
-
-  closePopup() {
-    this.showPopup = false;
-  }
-
-  updateTransaction(status: string) {
-    if (this.selectedTransaction) {
-      this.selectedTransaction.transactionStatus = status;
-      this.rowData = [...this.rowData]; // Refresh grid
-
-      alert(`Transaction ${status}`);
-      this.closePopup();
-    }
-  }
-
-
-  approveTransaction(status: string) {
-    if (this.selectedTransaction) {
-      console.log("this.selectedTransaction",this.selectedTransaction);
-      this.selectedTransaction.transactionStatus = status;
-      const request: IOUAcceptance = {
-        //hard code after backend run
-        clientRequestId: this.generateClientRequestId(),
-        flowClassName: "com.r3.developers.samples.obligation.workflows.IOUAcceptFlow",
-        requestBody: {
-          payeeAcceptance: true,
-          iouID: this.selectedTransaction.transactionId
-        }
-      };
-      this.transactionService.acceptanceRequest(request).subscribe(
-        (response: any) => {
-          // Directly display the response object
-          // alert(`Transaction Details: ${response}`);
-          console.log("response",response);
-          if(response.flowStatus == 'START_REQUESTED'){
-            alert("Approved for Transaction Request");
-          }
-        },
-        (error: { message: any; }) => {
-          alert(`Error: ${error.message}`)});
-
-      // alert(`Transaction ${status}`);
-      this.closePopup();
-    }
-  }
-
-
-
-
-  addTransaction(newTransaction: any) {
-    newTransaction.id = this.rowData.length + 1;
-    this.rowData.push(newTransaction);
-    this.rowData.sort((a, b) => b.id - a.id); // Sort latest first
-    this.rowData = [...this.rowData];
-  }
   handleFileUpload(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement.files && inputElement.files.length > 0) {
@@ -422,12 +292,6 @@ export class BuyerDashboardComponent {
       console.log("Selected file:", file.name);
       // You can process the file here (e.g., upload it)
     }
-  }
-
-  openForm() {
-    this.isFormOpen = true;
-    console.log("this.isFormOpen",this.isFormOpen);
-    this.router.navigate(['transaction-form']);
   }
 
 }

@@ -1,10 +1,13 @@
-# Use Nginx to serve Angular
-FROM nginx:latest
+# Use official Nginx image
+FROM nginx:alpine
 
-# Copy Angular build files to Nginx default folder
-COPY /ui/dist/ui /usr/share/nginx/html
+# Copy only the contents of the browser folder to Nginx's serving directory
+COPY dist/ui/browser /usr/share/nginx/html
 
-# Expose the default Nginx port
+# Copy a custom Nginx config file (optional)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
 EXPOSE 80
 
 # Start Nginx

@@ -1,0 +1,30 @@
+<div class="logo">
+  <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
+<div class="register-container">
+  <h2>Register New Account</h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+    <!-- Seller Details -->
+    <fieldset>
+      <legend>Org Details</legend>
+      <label>🏢 Seller Name: <input formControlName="sellerName" placeholder="Enter seller name" required></label>
+      <label>💼 CN: <input formControlName="sellerCN" placeholder="Enter CN" required></label>
+      <label>🌍 Country: <input formControlName="country" placeholder="Enter country" required></label>
+      <label>📍 Location: <input formControlName="location" placeholder="Enter location" required></label>
+      <label>🏢 OU: <input formControlName="ou" placeholder="Enter OU" required></label>
+    </fieldset>
+
+    <!-- User Details -->
+    <fieldset>
+      <legend>User Details</legend>
+      <label>👤 Full Name: <input formControlName="fullName" placeholder="Enter full name" required></label>
+      <label>📧 Email: <input type="email" formControlName="email" placeholder="Enter email" required></label>
+      <label>🔑 Username: <input formControlName="username" placeholder="Create a username" required></label>
+      <label>🔒 Password: <input type="password" formControlName="password" placeholder="Create a password" required></label>
+    </fieldset>
+
+    <button type="submit" class="submit-btn">Submit</button>
+    <button type="button" class="cancel-btn" (click)="closeForm()">Cancel</button>
+  </form>
+</div>
+</div>
