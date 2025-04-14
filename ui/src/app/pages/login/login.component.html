@@ -1,5 +1,4 @@
 <main class="main">
-  <!-- Bank Header with Logo -->
   <header class="bank-header">
     <img src="assets/Lloyds_Banking_Group_logo.png" alt="Logo" class="small-logo" />
     <span class="bank-title">COMMERCIAL BANKING</span>
@@ -13,26 +12,6 @@
     </p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
-      <!-- Select Bank -->
-     <!-- <div class="form-group">
-        <label for="bank">Select Bank:</label>
-        <select id="bank" formControlName="bank" required>
-          <option value="" disabled selected>Select Bank</option>
-          <option value="SBI">SBI</option>
-          <option value="LBG">LBG</option>
-        </select>
-      </div> -->
-
-      <!-- Select Role -->
-      <!--<div class="form-group">
-        <label for="role">Select Role:</label>
-        <select id="role" formControlName="role" required>
-          <option value="" disabled selected>Select Role</option>
-          <option value="Buyer">Buyer</option>
-          <option value="Seller">Seller</option>
-        </select>
-      </div> -->
-
       <!-- Username -->
       <div class="form-group">
         <label for="username">Username:</label>
@@ -52,7 +31,10 @@
       </div>
 
       <!-- Login Button -->
-      <button type="submit" class="login-btn">Continue</button>
+      <button type="submit" class="login-btn">Login</button>
+
+      <!-- Register Button -->
+      <button type="button" class="register-btn" routerLink="/register">Register</button>
 
       <!-- Error Message -->
       <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>

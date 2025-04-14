@@ -7,6 +7,7 @@ import { importProvidersFrom } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BuyerDashboardComponent } from './pages/buyer-dashboard/buyer-dashboard.component';
 import { ComplianceDashboardComponent } from './pages/compliance-dashboard/compliance-dashboard.component';
+import {RegisterComponent} from './pages/register/register.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,6 +16,8 @@ const routes: Routes = [
   { path: 'buyer-dashboard', component: BuyerDashboardComponent },
   { path: 'compliance-dashboard', component: ComplianceDashboardComponent },
   { path: '', redirectTo: 'compliance-dashboard', pathMatch: 'full' },
+  { path: 'register', component: RegisterComponent }
+  
 ];
 
 export const appConfig: ApplicationConfig = {

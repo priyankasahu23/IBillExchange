@@ -1,0 +1,77 @@
+.register-container {
+    background: #f9f9f9;
+    padding: 20px; /* Reduced padding for a tighter look */
+    border: 2px solid #ddd;
+    border-radius: 10px; /* Slightly sharper corners */
+    width: 200%;
+    max-width: 380px; /* Reduced width for a smaller form */
+    margin: 20px auto; /* Less margin for better alignment */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Softer shadow for subtle depth */
+  }
+  
+  /* Fieldset Styling */
+  fieldset {
+    border: 1px solid #ccc; /* Thinner border for less bulk */
+    border-radius: 6px;
+    padding: 12px; /* Slightly reduced padding */
+    margin-bottom: 15px;
+  }
+  
+  .small-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+  }
+  
+  /* Label Styling */
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 14px; /* Smaller text for labels */
+  }
+  
+  /* Input Fields */
+  input {
+    width: 100%;
+    padding: 10px; /* Reduced padding */
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 4px rgba(40, 167, 69, 0.3);
+  }
+  
+  /* Button Styles */
+  .submit-btn, .cancel-btn {
+    padding: 10px; /* Slightly smaller buttons */
+    border-radius: 5px;
+    font-size: 14px; /* Reduced text size */
+    width: 100%;
+  }
+  
+  .submit-btn {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .submit-btn:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-btn {
+    background-color: #dc3545;
+    color: #fff;
+    margin-top: 10px;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #c82333;
+  }
