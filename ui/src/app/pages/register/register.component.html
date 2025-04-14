@@ -8,10 +8,10 @@
     <fieldset>
       <legend>Org Details</legend>
       <label>🏢 Seller Name: <input formControlName="sellerName" placeholder="Enter seller name" required></label>
-      <label>💼 CN: <input formControlName="sellerCN" placeholder="Enter CN" required></label>
+      <label>💼 Company Name: <input formControlName="sellerCN" placeholder="Enter CN" required></label>
       <label>🌍 Country: <input formControlName="country" placeholder="Enter country" required></label>
       <label>📍 Location: <input formControlName="location" placeholder="Enter location" required></label>
-      <label>🏢 OU: <input formControlName="ou" placeholder="Enter OU" required></label>
+      <label>🏢 Organization Unit: <input formControlName="ou" placeholder="Enter OU" required></label>
     </fieldset>
 
     <!-- User Details -->
@@ -21,6 +21,17 @@
       <label>📧 Email: <input type="email" formControlName="email" placeholder="Enter email" required></label>
       <label>🔑 Username: <input formControlName="username" placeholder="Create a username" required></label>
       <label>🔒 Password: <input type="password" formControlName="password" placeholder="Create a password" required></label>
+      <!-- TODO -->
+      <!-- File Upload Section -->
+      <!-- <label>📦 KYC Document Type:
+        <select>
+          <option *ngFor="let docType of docTypeList" [value]="docType">{{ docType }}</option>
+        </select>
+      </label> -->
+    <fieldset>
+      <legend>📄 Upload KYC Document</legend>
+      <input type="file" (change)="handleFileUpload($event)" accept=".pdf, .jpg, .png, .docx" />
+    </fieldset>
     </fieldset>
 
     <button type="submit" class="submit-btn">Submit</button>

@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+docTypeList: string[] =['Aadhar Card','PAN','Supply Chain Finance(SCF)']; // TODO -> doc types
 
   constructor(private router: Router, private fb: FormBuilder) {
     this.registerForm = this.fb.group({
@@ -38,5 +39,14 @@ export class RegisterComponent {
 
   closeForm() {
     this.router.navigate(["/login"]);
+  }
+  
+  handleFileUpload(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      console.log("Selected file:", file.name);
+      // You can process the file here (e.g., upload it)
+    }
   }
 }
